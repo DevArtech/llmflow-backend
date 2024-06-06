@@ -4,9 +4,9 @@ LLMFlow - A programming language for LLM Apps
 
 ## How to use Virtual Environment
 
-1. Install pipenv via `pip install pipenv`
-2. Install dependencies with `python -m pipenv install` or just `pipenv install`
-3. Start the virtual environment with `python -m pipenv shell` or `pipenv shell`
+1. Install pipenv via `pip install pipenv` (Make sure you also set pipenv in your computer's environment variables)
+2. Install dependencies with `pipenv install`
+3. Start the virtual environment with `pipenv shell`
 
 ## How to run the API locally
 
