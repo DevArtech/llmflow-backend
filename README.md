@@ -1,4 +1,4 @@
-# llmflow-backend
+# LLMFlow - Backend
 
 LLMFlow - A programming language for LLM Apps
 
