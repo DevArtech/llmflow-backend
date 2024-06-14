@@ -10,8 +10,8 @@ LLMFlow - A programming language for LLM Apps
 
 ## How to run the API locally
 
-1. While in a virtual environment, first run `cd src`, then run `uvicorn main:app --reload`
+1. To boot up the API, run: `pipenv run start`
    > Executing the API in this manner allows for the application to automatically relaunch on edits to the scripts
 2. Application should open on `http://localhost:8000`
-3. To access the API docs, go to `http://localhost:8000/docs`
+3. To access the API docs, go to `http://localhost:8000/docs` or `http://localhost:8000/redoc`
    > The docs are a way to see what endpoints are available, and make test calls to the given endpoints.

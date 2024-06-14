@@ -14,3 +14,6 @@ fastapi-cors="*"
 [requires]
 python_version = "3.11"
 python_full_version = "3.11.2"
+
+[scripts]
+start = "uvicorn --app-dir src main:app --reload"
