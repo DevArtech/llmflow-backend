@@ -8,6 +8,7 @@ uvicorn = "*"
 fastapi = "*"
 pydantic = "*"
 fastapi-cors="*"
+gradio = "*"
 
 [dev-packages]
 
