@@ -30,6 +30,16 @@ def get_health() -> HealthCheck:
     """
     return HealthCheck(status="OK")
 
+@app.get("/api/v1/integrations", summary="Get all available integrations", response_description="Return a list of all available integrations", status_code=status.HTTP_200_OK, response_model=AvailableIntegrations)
+def get_integrations() -> AvailableIntegrations:
+    """
+    ## Get all available integrations
+    Endpoint to get all available integrations that can be used in the LLMFlow.
+    Returns:
+        AvailableIntegrations: Returns a JSON response with all available integrations
+    """
+    return AvailableIntegrations(integrations=["Inputs", "LLMs", "Outputs"])
+
 with io:
     gr.Markdown(
         """

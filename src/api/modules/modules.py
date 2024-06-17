@@ -7,13 +7,16 @@ class HealthCheck(BaseModel):
     status: str = "OK"
 
 class AvailableLLMs(BaseModel):
-    models: List[str] = ["OpenAI", "Gemini", "Ollama"]
+    options: List[str] = ["OpenAI", "Gemini", "Ollama"]
 
 class AvailableInputs(BaseModel):
-    inputs: List[str] = ["Text", "Image", "Audio", "Video", "File"]
+    options: List[str] = ["Text", "Image", "Audio", "Video", "File"]
 
 class AvailableOutputs(BaseModel):
-    inputs: List[str] = ["Text", "Image", "Audio", "Video", "File"]
+    options: List[str] = ["Text", "Image", "Audio", "Video", "File"]
+
+class AvailableIntegrations(BaseModel):
+    integrations: List[str] = ["Inputs", "LLMs", "Outputs"]
 
 class NodeItem(BaseModel):
     """An element of the node object."""
