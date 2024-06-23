@@ -14,6 +14,9 @@ async def get_text_output_node():
         name="Text Output",
         items=[
             HandleElement(label="Text", position="left", style={"top": 51}),
+            TextDisplay(text="Input"),
+            TextItem(label="Label", placeholder="Textbox"),
+            TextItem(label="Placeholder", placeholder=""),
         ]
     )
 

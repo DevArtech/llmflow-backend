@@ -1,13 +1,53 @@
+import json
 import gradio as gr
-from typing import Dict
+from typing import Dict, List, Any, Optional
 from api.modules.modules import *
-from fastapi import FastAPI, status
+from api.modules.model import Model
+from fastapi import FastAPI, status, HTTPException
 from api.api import router as api_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-
 io = gr.Blocks()
+model = Model()
+
+ELEMENTS_PER_ROW = 4
+
+def render_elements(input_elements: Optional[List[Any]] = None, output_elements: Optional[List[Any]] = None):
+    io.clear()
+
+    if input_elements == None:
+        input_elements = [gr.Markdown(
+            """
+            # Welcome to LLMFlow!
+            Add some input and output nodes to see the magic happen!
+            """
+        )]
+        output_elements = []
+
+    with io:
+        with gr.Row():
+            with gr.Column():
+                with gr.Row():
+                    if len(input_elements) > 0:
+                        input_elements[0].render()
+                for i in range(len(input_elements))[1::ELEMENTS_PER_ROW]:
+                    with gr.Row():
+                        for element in input_elements[i:i+ELEMENTS_PER_ROW]:
+                            element.render()
+                if len(input_elements) > 1:
+                    with gr.Row():
+                        btn = gr.Button("Submit", size="sm", variant="primary")
+                        btn.click(fn=model.execute_model, inputs=input_elements[1:], outputs=output_elements[1:])
+                        
+            with gr.Column():
+                with gr.Row():
+                    if len(output_elements) > 0:
+                        output_elements[0].render()
+                for i in range(len(output_elements))[1::ELEMENTS_PER_ROW]:
+                    with gr.Row():
+                        for element in output_elements[i:i+ELEMENTS_PER_ROW]:
+                            element.render()
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,13 +80,80 @@ def get_integrations() -> AvailableIntegrations:
     """
     return AvailableIntegrations(integrations=["Inputs", "LLMs", "Outputs"])
 
-with io:
-    gr.Markdown(
-        """
-        # Welcome to LLMFlow!
-        Add some input and output nodes to see the magic happen!
-        """
-    )
+@app.post("/api/v1/update-architecture", summary="Update the current Gradio architecture", response_description="Success on if the JSON is valid for the architecture", status_code=status.HTTP_200_OK)
+def update_architecture(architecture: ArchitectureContract) -> Dict:
+    """
+    ## Update the current Gradio architecture
+    Endpoint to update the current Gradio architecture with the JSON provided.
+    Returns:
+        Dict: Returns a JSON response with the success status
+    """
+    global input_elements, output_elements
+    request_model = architecture.model
+    input_elements = [gr.Markdown("# Input")]
+    output_elements = [gr.Markdown("# Output")]
+    elements = {}
+    model_schema = {}
+    
+    if not request_model["Nodes"]:
+        render_elements()
+        return {"success": True}
+    
+    # try:
+    for node in request_model["Nodes"]:
+        if "Input" in node["Name"]:
+            input_obj = None
+            if node["Name"] == "Text Input":
+                label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Textbox"
+                input_obj = gr.Textbox(label=label, placeholder=node["Items"][1]["Value"], elem_id=node["Id"])
+            if node["Name"] == "Image Input":
+                label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Image"
+                input_obj = gr.Image(label=label, elem_id=node["Id"])
+            if node["Name"] == "Audio Input":
+                label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Audio"
+                input_obj = gr.Audio(label=label, elem_id=node["Id"])
+            if node["Name"] == "Video Input":
+                label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Video"
+                input_obj = gr.Video(label=label, elem_id=node["Id"])                              
+            if node["Name"] == "File Input":
+                label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "File"
+                input_obj = gr.File(label=label, elem_id=node["Id"])
+
+            input_elements.append(input_obj)
+            elements[node["Id"]] = input_obj
+
+        elif "Output" in node["Name"]:
+            output_obj = None
+            if node["Name"] == "Text Output":
+                label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Result"
+                output_obj = gr.Textbox(label=label, placeholder=node["Items"][1]["Value"], interactive=False, elem_id=node["Id"])
+                
+            output_elements.append(output_obj)
+            elements[node["Id"]] = output_obj
+
+    for edge in request_model["Edges"]:
+        source_node = request_model["Nodes"][int(edge["Source"]) - 1]
+        source_element = elements[source_node["Id"]]
+        target_node = request_model["Nodes"][int(edge["Target"]) - 1]
+        target_element = elements[target_node["Id"]]
+
+        func = model.get_function(target_node)
+
+        if model_schema and source_element is model_schema[list(model_schema.keys())[-1]]["source"]:
+            model_schema[list(model_schema.keys())[-1]]["func"].append(func)
+        else:
+            idx = len(model_schema)
+            model_schema[idx] = {"source": source_element, "func": [func], "args": []}
+
+    model.set_model(model_schema)
+
+    # except Exception as e:
+    #     raise HTTPException(status_code=400, detail=f"Invalid model architecture provided. Error: {e}")
+    
+    render_elements(input_elements=input_elements, output_elements=output_elements)
+    return {"success": True}
+
+render_elements()
 
 app = gr.mount_gradio_app(app, io, path="/gradio")
 app.include_router(api_router, prefix="/api/v1")

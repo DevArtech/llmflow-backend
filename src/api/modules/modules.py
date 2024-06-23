@@ -18,6 +18,10 @@ class AvailableOutputs(BaseModel):
 class AvailableIntegrations(BaseModel):
     integrations: List[str] = ["Inputs", "LLMs", "Outputs"]
 
+class ArchitectureContract(BaseModel):
+    """Contract model to update the architecture of the Gradio application."""
+    model: Dict[str, Any]
+
 class NodeItem(BaseModel):
     """An element of the node object."""
     label: str = ""
