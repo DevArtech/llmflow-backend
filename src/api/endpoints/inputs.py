@@ -23,6 +23,7 @@ async def get_text_input_node():
 
     return node.to_dict()
 
+
 @router.get("/image", summary="Get a image-based input node", response_description="Return the image-based input node", status_code=status.HTTP_200_OK)
 async def get_image_input_node():
     node = Node(

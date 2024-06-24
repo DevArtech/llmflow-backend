@@ -6,6 +6,10 @@ class HealthCheck(BaseModel):
     """Response model to validate and return when performing a health check."""
     status: str = "OK"
 
+class AvailableChatOptions(BaseModel):
+    """Response model to validate and return when getting all available chat options."""
+    options: List[str] = ["Text-Chat", "Multimodal"]
+
 class AvailableLLMs(BaseModel):
     options: List[str] = ["OpenAI", "Gemini", "Ollama"]
 
@@ -141,7 +145,7 @@ class DropdownItem(NodeItem):
 
 class CheckboxItem(NodeItem):
     """Checkbox item for the node object."""
-    options: Dict[str, bool] = [{"A": True}]
+    options: Dict[str, List[Any]] = {"labels": ["A"], "states": [True]}
 
     def to_dict(self):
         return {"checkbox": {

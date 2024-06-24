@@ -2,7 +2,17 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
 
 class Model(BaseModel):
+    stored_json: Optional[Dict[str, Any]] = None
     model_store: Dict[int, Dict[str, Any]] = {}
+
+    def store_json(self, json_data: Dict[str, Any]):
+        self.stored_json = json_data
+
+    def compare_json(self, json_data: Dict[str, Any]):
+        if self.stored_json == None:
+            return False
+
+        return self.stored_json == json_data
 
     def set_model(self, model: List):
         self.model_store = model
@@ -11,7 +21,6 @@ class Model(BaseModel):
         return self.model_store
     
     def execute_model(self, *args):
-        print(self.model_store)
         data = args
         for _, value in self.model_store.items():
             final_result = []
