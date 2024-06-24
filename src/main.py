@@ -8,53 +8,7 @@ from api.api import router as api_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-io = gr.Blocks()
-model = Model()
-
-ELEMENTS_PER_ROW = 4
-
-def render_elements(chat_interface: Optional[Any] = None, input_elements: Optional[List[Any]] = None, output_elements: Optional[List[Any]] = None):
-    io.clear()
-    
-    if input_elements == None:
-        input_elements = [gr.Markdown(
-            """
-            # Welcome to LLMFlow!
-            Add some input and output nodes to see the magic happen!
-            """
-        )]
-
-    if output_elements == None:
-        output_elements = []
-
-    with io:
-        if chat_interface:
-            chat_interface.render()
-        with gr.Row():
-            with gr.Column():
-                with gr.Row():
-                    if len(input_elements) > 0:
-                        input_elements[0].render()
-                if len(input_elements) > 1:
-                    for i in range(len(input_elements))[1::ELEMENTS_PER_ROW]:
-                        with gr.Row():
-                            for element in input_elements[i:i+ELEMENTS_PER_ROW]:
-                                element.render()
-                    if chat_interface is None:
-                        with gr.Row():
-                            btn = gr.Button("Submit", size="sm", variant="primary")
-                            btn.click(fn=model.execute_model, inputs=input_elements[1:], outputs=output_elements[1:])
-
-            if chat_interface is None: 
-                with gr.Column():
-                    with gr.Row():
-                        if len(output_elements) > 0:
-                            output_elements[0].render()
-                    if len(output_elements) > 1:
-                        for i in range(len(output_elements))[1::ELEMENTS_PER_ROW]:
-                            with gr.Row():
-                                for element in output_elements[i:i+ELEMENTS_PER_ROW]:
-                                    element.render()
+model = Model(io=gr.Blocks())
 
 app.add_middleware(
     CORSMiddleware,
@@ -63,6 +17,7 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
+
 
 @app.get("/", summary="Perform a Health Check", response_description="Return HTTP Status Code 200 (OK)", status_code=status.HTTP_200_OK, response_model=HealthCheck)
 def get_health() -> HealthCheck:
@@ -77,6 +32,7 @@ def get_health() -> HealthCheck:
     """
     return HealthCheck(status="OK")
 
+
 @app.get("/api/v1/integrations", summary="Get all available integrations", response_description="Return a list of all available integrations", status_code=status.HTTP_200_OK, response_model=AvailableIntegrations)
 def get_integrations() -> AvailableIntegrations:
     """
@@ -86,6 +42,7 @@ def get_integrations() -> AvailableIntegrations:
         AvailableIntegrations: Returns a JSON response with all available integrations
     """
     return AvailableIntegrations(integrations=["Inputs", "Chat", "LLMs", "Outputs"])
+
 
 @app.post("/api/v1/update-architecture", summary="Update the current Gradio architecture", response_description="Success on if the JSON is valid for the architecture", status_code=status.HTTP_200_OK)
 def update_architecture(architecture: ArchitectureContract) -> Dict:
@@ -105,7 +62,7 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
         model_schema = {}
         
         if not request_model["Nodes"]:
-            render_elements()
+            model.update_io()
             return {"success": True}
         
         # try:
@@ -115,9 +72,17 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
                 input_elements.insert(0, gr.Markdown("# Additional Inputs"))
                 output_elements = None
                 chat_obj = None
-                if node["Name"] == "Text-Only Chat Display Node":
-                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
-                    chat_obj = gr.ChatInterface(fn=None, multimodal=False, fill_height=True, title=label,)
+                label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
+                print(label)
+                chatbot = gr.Chatbot(label=label,
+                                        rtl=node["Items"][2]["Value"],
+                                        show_copy_button=node["Items"][3]["Value"],
+                                        render_markdown=node["Items"][4]["Value"],
+                                        bubble_full_width=node["Items"][5]["Value"],
+                                        likeable=node["Items"][6]["Value"],
+                                        elem_id=f"chattext_1")
+                textbox = gr.Textbox(label=None, placeholder=node["Items"][1]["Value"], elem_id=f"chattext_2")
+                chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=False if node["Name"] == "Text-Only Chat Display Node" else True, fill_height=True, chatbot=chatbot, textbox=textbox)
                 
                 chat_interface = chat_obj
                 elements[node["Id"]] = chat_obj
@@ -172,10 +137,14 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
         # except Exception as e:
         #     raise HTTPException(status_code=400, detail=f"Invalid model architecture provided. Error: {e}")
         
-        render_elements(chat_interface=chat_interface, input_elements=input_elements, output_elements=output_elements)
+        model.update_io(chat_interface=chat_interface, input_elements=input_elements, output_elements=output_elements)
     return {"success": True}
 
-render_elements()
+@app.get("/api/v1/reset-architecture", summary="Reset the current Gradio architecture", response_description="Success on if the architecture is reset", status_code=status.HTTP_200_OK)
+async def reset_architecture():
+    global model
+    model = Model()
+    return {"success": True}
 
-app = gr.mount_gradio_app(app, io, path="/gradio")
+app = gr.mount_gradio_app(app, model.io, path="/gradio")
 app.include_router(api_router, prefix="/api/v1")
