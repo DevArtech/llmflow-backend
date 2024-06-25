@@ -117,7 +117,7 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
                 chat_obj = None
                 if node["Name"] == "Text-Only Chat Display Node":
                     label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
-                    chat_obj = gr.ChatInterface(fn=None, multimodal=False, fill_height=True, title=label,)
+                    chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=False, fill_height=True, title=label)
                 
                 chat_interface = chat_obj
                 elements[node["Id"]] = chat_obj
