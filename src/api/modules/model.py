@@ -42,6 +42,9 @@ class Model(BaseModel):
         
         return data
     
+    def execute_chat(self, *args):
+        return str(self.execute_model(args)[0])
+    
     def get_function(self, node: Dict[str, Any]):
         if node["Name"] == "Text Output":
             def function(data, *args):
