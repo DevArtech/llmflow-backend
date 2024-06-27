@@ -58,7 +58,7 @@ def render_elements(chat_interface: Optional[Any] = None, input_elements: Option
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
@@ -123,6 +123,15 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
                         likeable=node["Items"][3]["Value"],
                         elem_id="chat_chatbot"
                     ), textbox=gr.Textbox(placeholder=node["Items"][1]["Value"], rtl=node["Items"][2]["Value"], elem_id="chat_texbox"))
+
+                if node["Name"] == "Multimodal Chat Display Node":
+                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
+                    chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=True, fill_height=True, chatbot=gr.Chatbot(
+                        label=label,
+                        rtl=node["Items"][2]["Value"],
+                        likeable=node["Items"][3]["Value"],
+                        elem_id="chat_chatbot"
+                    ), textbox=gr.MultimodalTextbox(placeholder=node["Items"][1]["Value"], rtl=node["Items"][2]["Value"], elem_id="chat_multimodal"))
                 
                 chat_interface = chat_obj
                 elements[node["Id"]] = chat_obj

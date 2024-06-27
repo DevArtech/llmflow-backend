@@ -23,7 +23,7 @@ class Model(BaseModel):
     
     def execute_model(self, *args):
         data = args
-        for _, value in self.model_store.items():
+        for i, value in self.model_store.items():
             final_result = []
             for idx, func in enumerate(value["func"]):
                 temp_data = None
@@ -37,14 +37,29 @@ class Model(BaseModel):
                 final_result.append(temp_data)
             
             data = final_result
+        
 
         if len(data) == 1:
             return data[0]
+        
         
         return data
     
     def execute_chat(self, *args):
         response = self.execute_model(args)
+
+        if isinstance(response, tuple) and isinstance(response[0], dict):
+            res = response[0].copy()
+            response = ""
+            for key, value in res.items():
+                if key == "text":
+                    response += value
+                if key == "files":
+                    if len(value) > 0:
+                        response += " - Files: "
+                    for file in value:
+                        response += f"{file}\n"
+            
         return str(response[0]) if isinstance(response, list) or isinstance(response, tuple) else str(response)
     
     def get_function(self, node: Dict[str, Any]):
