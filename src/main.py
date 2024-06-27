@@ -115,7 +115,7 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
                 input_elements.insert(0, gr.Markdown("# Additional Inputs"))
                 output_elements = None
                 chat_obj = None
-                if node["Name"] == "Text-Only Chat Display Node":
+                if node["Name"] == "Text-Only Chat":
                     label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
                     chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=False, fill_height=True, chatbot=gr.Chatbot(
                         label=label,
@@ -124,7 +124,7 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
                         elem_id="chat_chatbot"
                     ), textbox=gr.Textbox(placeholder=node["Items"][1]["Value"], rtl=node["Items"][2]["Value"], elem_id="chat_texbox"))
 
-                if node["Name"] == "Multimodal Chat Display Node":
+                if node["Name"] == "Multimodal Chat":
                     label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
                     chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=True, fill_height=True, chatbot=gr.Chatbot(
                         label=label,

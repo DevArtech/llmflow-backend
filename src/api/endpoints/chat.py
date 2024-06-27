@@ -11,7 +11,7 @@ async def get_chats():
 async def get_text_only_chat_node():
     node = Node(
         icon="Chat",
-        name="Text-Only Chat Display Node",
+        name="Text-Only Chat",
         items=[
             HandleElement(label="Response", position="right", style={"top": 51}),
             TextDisplay(text="Input"),
@@ -30,7 +30,7 @@ async def get_text_only_chat_node():
 async def get_multimodal_chat_node():
     node = Node(
         icon="Chat",
-        name="Multimodal Chat Display Node",
+        name="Multimodal Chat",
         items=[
             HandleElement(label="Response", position="right", style={"top": 51}),
             TextDisplay(text="Input"),
