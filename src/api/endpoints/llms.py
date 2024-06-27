@@ -11,11 +11,11 @@ async def get_models():
 async def get_openai():
     node = Node(
         icon="OpenAI",
-        name="OpenAI Model",
+        name="OpenAI LLM",
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
             TextDisplay(text="Input"),
-            TextItem(label="API Key", placeholder="sk-..."),
+            TextItem(label="API Key", placeholder="sk-...", type="password"),
             DropdownItem(label="Model", options=["gpt-3.5-turbo-0125", "gpt-4o", "gpt-4-turbo", "gpt-4"]),
             NumberItem(label="Temperature", min=0.0, max=1.0, step=0.01, initial=0.7),
             TextDisplay(text="Output"),
@@ -29,11 +29,11 @@ async def get_openai():
 async def get_gemini():
     node = Node(
         icon="Gemini",
-        name="Gemini Model",
+        name="Gemini LLM",
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
             TextDisplay(text="Input"),
-            TextItem(label="API Key", placeholder="sk-..."),
+            TextItem(label="API Key", placeholder="sk-...", type="password"),
             DropdownItem(label="Model", options=["gemini-1.5-flash", "gemini-1.5-pro"]),
             TextDisplay(text="Output"),
             HandleElement(label="Gemini", position="right", type="source", style={"bottom": 12, "top": "auto"}),
@@ -46,7 +46,7 @@ async def get_gemini():
 async def get_ollama():
     node = Node(
         icon="Ollama",
-        name="Ollama Model",
+        name="Ollama LLM",
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
             TextDisplay(text="Input"),

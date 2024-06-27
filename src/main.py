@@ -15,7 +15,7 @@ ELEMENTS_PER_ROW = 4
 
 def render_elements(chat_interface: Optional[Any] = None, input_elements: Optional[List[Any]] = None, output_elements: Optional[List[Any]] = None):
     io.clear()
-    
+
     if input_elements == None:
         input_elements = [gr.Markdown(
             """
@@ -117,7 +117,12 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
                 chat_obj = None
                 if node["Name"] == "Text-Only Chat Display Node":
                     label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
-                    chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=False, fill_height=True, title=label)
+                    chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=False, fill_height=True, chatbot=gr.Chatbot(
+                        label=label,
+                        rtl=node["Items"][2]["Value"],
+                        likeable=node["Items"][3]["Value"],
+                        elem_id="chat_chatbot"
+                    ), textbox=gr.Textbox(placeholder=node["Items"][1]["Value"], rtl=node["Items"][2]["Value"], elem_id="chat_texbox"))
                 
                 chat_interface = chat_obj
                 elements[node["Id"]] = chat_obj
@@ -143,6 +148,13 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
                 input_elements.append(input_obj)
                 elements[node["Id"]] = input_obj
 
+            if "LLM" in node["Name"]:
+                llm_obj = None
+                if node["Name"] == "OpenAI LLM":
+                    llm_obj = gr.Textbox(visible=False, elem_id=node["Id"])
+
+                elements[node["Id"]] = llm_obj
+
             elif "Output" in node["Name"]:
                 output_obj = None
                 if node["Name"] == "Text Output":
@@ -156,7 +168,6 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
             source_node = request_model["Nodes"][int(edge["Source"]) - 1]
             source_element = elements[source_node["Id"]]
             target_node = request_model["Nodes"][int(edge["Target"]) - 1]
-            target_element = elements[target_node["Id"]]
 
             func = model.get_function(target_node)
 
@@ -164,7 +175,7 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
                 model_schema[list(model_schema.keys())[-1]]["func"].append(func)
             else:
                 idx = len(model_schema)
-                model_schema[idx] = {"source": source_element, "func": [func], "args": []}
+                model_schema[idx] = {"source": source_element, "func": [func], "args": [target_node["Items"]]}
 
         model.set_model(model_schema)
         model.store_json(request_model)

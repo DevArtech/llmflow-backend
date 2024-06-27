@@ -13,17 +13,14 @@ async def get_text_only_chat_node():
         icon="Chat",
         name="Text-Only Chat Display Node",
         items=[
-            HandleElement(label="Response", position="left", style={"top": 51}),
+            HandleElement(label="Response", position="right", style={"top": 51}),
             TextDisplay(text="Input"),
             TextItem(label="Label", placeholder="Chat"),
             TextItem(label="Placeholder", placeholder=""),
             CheckboxItem(label="Right-To-Left", options={"labels": ["True"], "states": [False]}),
-            CheckboxItem(label="Copy", options={"labels": ["True"], "states": [False]}),
-            CheckboxItem(label="Render Markdown", options={"labels": ["True"], "states": [True]}),
-            CheckboxItem(label="Bubble Full Width", options={"labels": ["True"], "states": [True]}),
             CheckboxItem(label="Rateable", options={"labels": ["True"], "states": [False]}),
             TextDisplay(text="Output"),
-            HandleElement(label="Prompt", position="right", type="source", style={"bottom": 12, "top": "auto"}),
+            HandleElement(label="Prompt", position="left", type="source", style={"bottom": 12, "top": "auto"}),
         ]
     )
 

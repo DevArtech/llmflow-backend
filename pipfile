@@ -9,6 +9,7 @@ fastapi = "*"
 pydantic = "*"
 fastapi-cors="*"
 gradio = "*"
+openai = "*"
 
 [dev-packages]
 
