@@ -66,17 +66,20 @@ class Model(BaseModel):
         if node["Name"] == "OpenAI LLM":
             def function(data, *args):
                 client = OpenAI(api_key=args[0][0]["Value"])
+                if isinstance(data, list) or isinstance(data, tuple):
+                    data = data[0]
+                if isinstance(data, dict):
+                    data = data["text"]
                 completion = client.chat.completions.create(
                     model=args[0][1]["Value"],
                     messages=[
                         {"role": "system", "content": """You are an assistant developed by the LLMFlow framework. 
                          LLMFlow is a no-code framework that allows anyone to build an LLM application with ease. 
                          They can then take their generated programs to production with code generation and exportation to a Github repository."""},
-                        {"role": "user", "content": data[0]}
+                        {"role": "user", "content": data}
                     ],
                     temperature=float(args[0][2]["Value"])
                 )
-                print(completion.choices[0].message.content)
                 return completion.choices[0].message.content
         else:
             def function(data, *args):

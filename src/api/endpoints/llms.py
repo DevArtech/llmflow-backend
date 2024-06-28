@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from ..modules.modules import AvailableLLMs, TextItem, DropdownItem, Node, NumberItem, TextDisplay, HandleElement
+from ..modules.modules import AvailableLLMs, TextItem, DropdownItem, Node, SliderItem, TextDisplay, HandleElement
 
 router = APIRouter()
 
@@ -17,7 +17,7 @@ async def get_openai():
             TextDisplay(text="Input"),
             TextItem(label="API Key", placeholder="sk-...", type="password"),
             DropdownItem(label="Model", options=["gpt-3.5-turbo-0125", "gpt-4o", "gpt-4-turbo", "gpt-4"]),
-            NumberItem(label="Temperature", min=0.0, max=1.0, step=0.01, initial=0.7),
+            SliderItem(label="Temperature", min=0.0, max=2.0, step=0.01, initial=0.7),
             TextDisplay(text="Output"),
             HandleElement(label="OpenAI", position="right", type="source", style={"bottom": 12, "top": "auto"}),
         ]
@@ -52,7 +52,7 @@ async def get_ollama():
             TextDisplay(text="Input"),
             TextItem(label="Base URL", placeholder="http://localhost:1234", type="url"),
             DropdownItem(label="Model", options=["llama3", "llama2"]),
-            NumberItem(label="Temperature", min=0.0, max=1.0, step=0.01, initial=0.7),
+            SliderItem(label="Temperature", min=0.0, max=2.0, step=0.01, initial=0.7),
             TextDisplay(text="Output"),
             HandleElement(label="Ollama", position="right", type="source", style={"bottom": 12, "top": "auto"}),
         ]
