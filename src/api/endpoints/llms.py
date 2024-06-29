@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from ..modules.modules import AvailableLLMs, TextItem, DropdownItem, Node, SliderItem, TextDisplay, HandleElement
+from ..modules.modules import AvailableLLMs, TextItem, DropdownItem, Node, SliderItem, TextDisplay, HandleElement, TextAreaItem
 
 router = APIRouter()
 
@@ -18,6 +18,7 @@ async def get_openai():
             TextItem(label="API Key", placeholder="sk-...", type="password", required=True),
             DropdownItem(label="Model", options=["gpt-3.5-turbo-0125", "gpt-4o", "gpt-4-turbo", "gpt-4"]),
             SliderItem(label="Temperature", min=0.0, max=2.0, step=0.01, initial=0.7),
+            TextAreaItem(label="System Message"),
             TextDisplay(text="Output"),
             HandleElement(label="OpenAI", position="right", type="source", style={"bottom": 12, "top": "auto"}),
         ]

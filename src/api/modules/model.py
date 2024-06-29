@@ -1,6 +1,7 @@
-from openai import OpenAI
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
+from ..models.llms.openai import OpenAILLM
+from langchain_core.messages import SystemMessage
 
 class Model(BaseModel):
     stored_json: Optional[Dict[str, Any]] = None
@@ -68,23 +69,11 @@ class Model(BaseModel):
     def get_function(self, node: Dict[str, Any]):
         if node["Name"] == "OpenAI LLM":
             def function(data, *args):
-                print(args)
-                client = OpenAI(api_key=args[0][0]["Value"])
-                if isinstance(data, list) or isinstance(data, tuple):
-                    data = data[0]
-                if isinstance(data, dict):
-                    data = data["text"]
-                completion = client.chat.completions.create(
-                    model=args[0][1]["Value"],
-                    messages=[
-                        {"role": "system", "content": """You are an assistant developed by the LLMFlow framework. 
-                         LLMFlow is a no-code framework that allows anyone to build an LLM application with ease. 
-                         They can then take their generated programs to production with code generation and exportation to a Github repository."""},
-                        {"role": "user", "content": data}
-                    ],
-                    temperature=float(args[0][2]["Value"])
-                )
-                return completion.choices[0].message.content
+                initial_cache = None
+                if args[0][3]["Value"] != "":
+                    initial_cache = [SystemMessage(content=args[0][3]["Value"])]
+                model = OpenAILLM(api_key=args[0][0]["Value"], model_type=args[0][1]["Value"], temperature=float(args[0][2]["Value"]), initial_cache=initial_cache)
+                return model.invoke(data).content
         else:
             def function(data, *args):
                 return data

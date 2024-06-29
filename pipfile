@@ -10,6 +10,8 @@ pydantic = "*"
 fastapi-cors="*"
 gradio = "*"
 openai = "*"
+langchain = "*"
+langchain-openai = "*"
 
 [dev-packages]
 

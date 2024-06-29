@@ -86,6 +86,19 @@ class TextItem(NodeItem):
             "placeholder": self.placeholder,
             "type": self.type
         }}
+    
+class TextAreaItem(NodeItem):
+    """Text area item for the node object."""
+    placeholder: str = ""
+    type: str = "text"
+
+    def to_dict(self):
+        return {"text-area": {
+            "label": self.label,
+            "required": self.required,
+            "placeholder": self.placeholder,
+            "type": self.type
+        }}
 
 class FileItem(NodeItem):
     """File item for the node object."""
