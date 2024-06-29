@@ -7,8 +7,13 @@ from fastapi import FastAPI, status, HTTPException
 from api.api import router as api_router
 from fastapi.middleware.cors import CORSMiddleware
 
+CSS = """
+#chat_texbox { flex-grow: 5; }
+#chat_chatbot { height: 60vh !important; }
+"""
+
 app = FastAPI()
-io = gr.Blocks()
+io = gr.Blocks(css=CSS)
 model = Model()
 
 ELEMENTS_PER_ROW = 4

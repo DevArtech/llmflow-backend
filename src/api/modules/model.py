@@ -46,6 +46,9 @@ class Model(BaseModel):
         return data
     
     def execute_chat(self, *args):
+        if not self.model_store:
+            return "Chat interface is not connected to any output. Please loop the chat interface to reconnect to itself via other nodes or itself."
+        
         response = self.execute_model(args)
 
         if isinstance(response, tuple) and isinstance(response[0], dict):
@@ -65,6 +68,7 @@ class Model(BaseModel):
     def get_function(self, node: Dict[str, Any]):
         if node["Name"] == "OpenAI LLM":
             def function(data, *args):
+                print(args)
                 client = OpenAI(api_key=args[0][0]["Value"])
                 if isinstance(data, list) or isinstance(data, tuple):
                     data = data[0]

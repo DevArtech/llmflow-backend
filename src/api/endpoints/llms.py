@@ -15,7 +15,7 @@ async def get_openai():
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
             TextDisplay(text="Input"),
-            TextItem(label="API Key", placeholder="sk-...", type="password"),
+            TextItem(label="API Key", placeholder="sk-...", type="password", required=True),
             DropdownItem(label="Model", options=["gpt-3.5-turbo-0125", "gpt-4o", "gpt-4-turbo", "gpt-4"]),
             SliderItem(label="Temperature", min=0.0, max=2.0, step=0.01, initial=0.7),
             TextDisplay(text="Output"),

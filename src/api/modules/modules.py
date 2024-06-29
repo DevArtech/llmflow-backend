@@ -29,6 +29,7 @@ class ArchitectureContract(BaseModel):
 class NodeItem(BaseModel):
     """An element of the node object."""
     label: str = ""
+    required: bool = False
 
     def to_dict(self):
         pass
@@ -81,6 +82,7 @@ class TextItem(NodeItem):
     def to_dict(self):
         return {"text": {
             "label": self.label,
+            "required": self.required,
             "placeholder": self.placeholder,
             "type": self.type
         }}
@@ -90,7 +92,8 @@ class FileItem(NodeItem):
 
     def to_dict(self):
         return {"file": {
-            "label": self.label
+            "label": self.label,
+            "required": self.required,
         }}
 
 class RadioItem(NodeItem):
@@ -101,6 +104,7 @@ class RadioItem(NodeItem):
     def to_dict(self):
         return {"radio": {
             "label": self.label,
+            "required": self.required,
             "options": self.options,
             "initial": self.initial
         }}
@@ -112,6 +116,7 @@ class ColorItem(NodeItem):
     def to_dict(self):
         return {"color": {
             "label": self.label,
+            "required": self.required,
             "initial": self.initial
         }}
 
@@ -125,6 +130,7 @@ class SliderItem(NodeItem):
     def to_dict(self):
         return {"slider": {
             "label": self.label,
+            "required": self.required,
             "min": self.min,
             "max": self.max,
             "step": self.step,
@@ -139,6 +145,7 @@ class DropdownItem(NodeItem):
     def to_dict(self):
         return {"dropdown": {
             "label": self.label,
+            "required": self.required,
             "options": self.options,
             "initial": self.initial
         }}
@@ -150,6 +157,7 @@ class CheckboxItem(NodeItem):
     def to_dict(self):
         return {"checkbox": {
             "label": self.label,
+            "required": self.required,
             "options": self.options
         }}
 
@@ -162,6 +170,7 @@ class BezierCurveItem(NodeItem):
     def to_dict(self):
         return {"bezier": {
             "label": self.label,
+            "required": self.required,
             "initialHandles": self.initialHandles,
             "maxX": self.maxX,
             "maxY": self.maxY
@@ -174,6 +183,7 @@ class DatetimeItem(NodeItem):
     def to_dict(self):
         return {"datetime": {
             "label": self.label,
+            "required": self.required,
             "initial": self.initial
         }}
 
@@ -187,6 +197,7 @@ class NumberItem(NodeItem):
     def to_dict(self):
         return {"number": {
             "label": self.label,
+            "required": self.required,
             "min": self.min,
             "max": self.max,
             "step": self.step,
