@@ -25,6 +25,17 @@ class Model(BaseModel):
     def execute_model(self, *args):
         data = args
         for i, value in self.model_store.items():
+            if value["overrides"]:
+                for override in value["overrides"]:
+                    ovrd_key = list(override.keys())[0]
+                    ovrd_value = int(override[ovrd_key])
+                    for dictionary in value["args"][0]:
+                        if "Type" in dictionary and dictionary["Type"] == ovrd_key:
+                            if isinstance(args[0], tuple):
+                                print(args[0][ovrd_value])
+                                dictionary["Value"] = args[0][ovrd_value + 2]
+                            else:
+                                dictionary["Value"] = args[ovrd_value]
             final_result = []
             for idx, func in enumerate(value["func"]):
                 temp_data = None
@@ -79,3 +90,15 @@ class Model(BaseModel):
                 return data
             
         return function
+    
+    def get_override(self, node: Dict[str, Any], handle: str):
+        if node["Name"] == "OpenAI LLM":
+            if handle == "element_2":
+                return "API Key"
+            if handle == "element_3":
+                return "Model"
+            if handle == "element_4":
+                return "Temperature"
+            if handle == "element_5":
+                return "System Message"
+

@@ -15,10 +15,10 @@ async def get_openai():
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
             TextDisplay(text="Input"),
-            TextItem(label="API Key", placeholder="sk-...", type="password", required=True),
-            DropdownItem(label="Model", options=["gpt-3.5-turbo-0125", "gpt-4o", "gpt-4-turbo", "gpt-4"]),
-            SliderItem(label="Temperature", min=0.0, max=2.0, step=0.01, initial=0.7),
-            TextAreaItem(label="System Message"),
+            TextItem(label="API Key", placeholder="sk-...", type="password", required=True, hasHandle=True, handleStyle={"top": 104}),
+            DropdownItem(label="Model", options=["gpt-3.5-turbo-0125", "gpt-4o", "gpt-4-turbo", "gpt-4"], hasHandle=True, handleStyle={"top": 134}),
+            SliderItem(label="Temperature", min=0.0, max=2.0, step=0.01, initial=0.7, hasHandle=True, handleStyle={"top": 174}),
+            TextAreaItem(label="System Message", hasHandle=True, handleStyle={"top": 211}),
             TextDisplay(text="Output"),
             HandleElement(label="OpenAI", position="right", type="source", style={"bottom": 12, "top": "auto"}),
         ]

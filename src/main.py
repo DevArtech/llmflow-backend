@@ -35,31 +35,32 @@ def render_elements(chat_interface: Optional[Any] = None, input_elements: Option
     with io:
         if chat_interface:
             chat_interface.render()
-        with gr.Row():
-            with gr.Column():
-                with gr.Row():
-                    if len(input_elements) > 0:
-                        input_elements[0].render()
-                if len(input_elements) > 1:
-                    for i in range(len(input_elements))[1::ELEMENTS_PER_ROW]:
-                        with gr.Row():
-                            for element in input_elements[i:i+ELEMENTS_PER_ROW]:
-                                element.render()
-                    if chat_interface is None:
-                        with gr.Row():
-                            btn = gr.Button("Submit", size="sm", variant="primary")
-                            btn.click(fn=model.execute_model, inputs=input_elements[1:], outputs=output_elements[1:])
-
-            if chat_interface is None: 
+        else:
+            with gr.Row():
                 with gr.Column():
                     with gr.Row():
-                        if len(output_elements) > 0:
-                            output_elements[0].render()
-                    if len(output_elements) > 1:
-                        for i in range(len(output_elements))[1::ELEMENTS_PER_ROW]:
+                        if len(input_elements) > 0:
+                            input_elements[0].render()
+                    if len(input_elements) > 1:
+                        for i in range(len(input_elements))[1::ELEMENTS_PER_ROW]:
                             with gr.Row():
-                                for element in output_elements[i:i+ELEMENTS_PER_ROW]:
+                                for element in input_elements[i:i+ELEMENTS_PER_ROW]:
                                     element.render()
+                        if chat_interface is None:
+                            with gr.Row():
+                                btn = gr.Button("Submit", size="sm", variant="primary")
+                                btn.click(fn=model.execute_model, inputs=input_elements[1:], outputs=output_elements[1:])
+
+                if chat_interface is None: 
+                    with gr.Column():
+                        with gr.Row():
+                            if len(output_elements) > 0:
+                                output_elements[0].render()
+                        if len(output_elements) > 1:
+                            for i in range(len(output_elements))[1::ELEMENTS_PER_ROW]:
+                                with gr.Row():
+                                    for element in output_elements[i:i+ELEMENTS_PER_ROW]:
+                                        element.render()
 
 app.add_middleware(
     CORSMiddleware,
@@ -100,6 +101,7 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
     Returns:
         Dict: Returns a JSON response with the success status
     """
+
     global input_elements, output_elements
     request_model = architecture.model
     if not model.compare_json(request_model):
@@ -117,12 +119,12 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
         for node in request_model["Nodes"]:
             if "Chat" in node["Name"]:
                 input_elements.pop(0)
-                input_elements.insert(0, gr.Markdown("# Additional Inputs"))
+                # input_elements.insert(0, gr.Markdown("# Additional Inputs"))
                 output_elements = None
                 chat_obj = None
                 if node["Name"] == "Text-Only Chat":
                     label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
-                    chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=False, fill_height=True, chatbot=gr.Chatbot(
+                    chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=False, fill_height=True, additional_inputs=input_elements, chatbot=gr.Chatbot(
                         label=label,
                         rtl=node["Items"][2]["Value"],
                         likeable=node["Items"][3]["Value"],
@@ -145,7 +147,7 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
                 input_obj = None
                 if node["Name"] == "Text Input":
                     label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Textbox"
-                    input_obj = gr.Textbox(label=label, placeholder=node["Items"][1]["Value"], elem_id=node["Id"])
+                    input_obj = gr.Textbox(label=label, placeholder=node["Items"][1]["Value"], type=node["Items"][2]["Value"], elem_id=node["Id"])
                 if node["Name"] == "Image Input":
                     label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Image"
                     input_obj = gr.Image(label=label, elem_id=node["Id"])
@@ -188,8 +190,19 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
             if model_schema and source_element is model_schema[list(model_schema.keys())[-1]]["source"]:
                 model_schema[list(model_schema.keys())[-1]]["func"].append(func)
             else:
-                idx = len(model_schema)
-                model_schema[idx] = {"source": source_element, "func": [func], "args": [target_node["Items"]]}
+                # target_node['Id'] only works for now so long as nodes only have one input. Should update later to handle multiple inputs
+                model_schema[target_node['Id']] = {"source": source_element, "func": [func], "args": [target_node["Items"]], "overrides": []}
+
+        for parameter_edge in request_model["ParameterEdges"]:
+            source_node = request_model["Nodes"][int(parameter_edge["Source"]) - 1]
+            source_element = elements[source_node["Id"]]
+            target_node = request_model["Nodes"][int(parameter_edge["Target"]) - 1]
+
+            item = model_schema[target_node['Id']]
+            override = model.get_override(target_node, parameter_edge["Target Handle"])
+            item["overrides"].append({override: input_elements.index(source_element) - 1 if chat_interface is None else input_elements.index(source_element)})
+            model_schema[target_node['Id']] = item
+
 
         model.set_model(model_schema)
         model.store_json(request_model)

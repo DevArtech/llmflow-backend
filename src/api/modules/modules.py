@@ -30,6 +30,10 @@ class NodeItem(BaseModel):
     """An element of the node object."""
     label: str = ""
     required: bool = False
+    hasHandle: bool = False
+    handleType: str = "target"
+    handlePosition: str = "left"
+    handleStyle: Dict[str, Any] = {}
 
     def to_dict(self):
         pass
@@ -84,7 +88,11 @@ class TextItem(NodeItem):
             "label": self.label,
             "required": self.required,
             "placeholder": self.placeholder,
-            "type": self.type
+            "type": self.type,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
     
 class TextAreaItem(NodeItem):
@@ -97,7 +105,11 @@ class TextAreaItem(NodeItem):
             "label": self.label,
             "required": self.required,
             "placeholder": self.placeholder,
-            "type": self.type
+            "type": self.type,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
 
 class FileItem(NodeItem):
@@ -107,6 +119,10 @@ class FileItem(NodeItem):
         return {"file": {
             "label": self.label,
             "required": self.required,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
 
 class RadioItem(NodeItem):
@@ -119,7 +135,11 @@ class RadioItem(NodeItem):
             "label": self.label,
             "required": self.required,
             "options": self.options,
-            "initial": self.initial
+            "initial": self.initial,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
 
 class ColorItem(NodeItem):
@@ -130,7 +150,11 @@ class ColorItem(NodeItem):
         return {"color": {
             "label": self.label,
             "required": self.required,
-            "initial": self.initial
+            "initial": self.initial,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
 
 class SliderItem(NodeItem):
@@ -147,7 +171,11 @@ class SliderItem(NodeItem):
             "min": self.min,
             "max": self.max,
             "step": self.step,
-            "initial": self.initial
+            "initial": self.initial,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
 
 class DropdownItem(NodeItem):
@@ -160,7 +188,11 @@ class DropdownItem(NodeItem):
             "label": self.label,
             "required": self.required,
             "options": self.options,
-            "initial": self.initial
+            "initial": self.initial,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
 
 class CheckboxItem(NodeItem):
@@ -171,7 +203,11 @@ class CheckboxItem(NodeItem):
         return {"checkbox": {
             "label": self.label,
             "required": self.required,
-            "options": self.options
+            "options": self.options,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
 
 class BezierCurveItem(NodeItem):
@@ -186,7 +222,11 @@ class BezierCurveItem(NodeItem):
             "required": self.required,
             "initialHandles": self.initialHandles,
             "maxX": self.maxX,
-            "maxY": self.maxY
+            "maxY": self.maxY,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
 
 class DatetimeItem(NodeItem):
@@ -197,7 +237,11 @@ class DatetimeItem(NodeItem):
         return {"datetime": {
             "label": self.label,
             "required": self.required,
-            "initial": self.initial
+            "initial": self.initial,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}
 
 class NumberItem(NodeItem):
@@ -214,5 +258,9 @@ class NumberItem(NodeItem):
             "min": self.min,
             "max": self.max,
             "step": self.step,
-            "initial": self.initial
+            "initial": self.initial,
+            "hasHandle": self.hasHandle,
+            "handleType": self.handleType,
+            "handlePosition": self.handlePosition,
+            "handleStyle": self.handleStyle
         }}

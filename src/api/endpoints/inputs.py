@@ -16,6 +16,7 @@ async def get_text_input_node():
             TextDisplay(text="Input"),
             TextItem(label="Label", placeholder="Textbox"),
             TextItem(label="Placeholder", placeholder=""),
+            DropdownItem(label="Type", options=["text", "password", "email"], initial=0),
             TextDisplay(text="Output"),
             HandleElement(label="Prompt", position="right", type="source", style={"bottom": 12, "top": "auto"}),
         ]
