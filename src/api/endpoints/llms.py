@@ -34,8 +34,8 @@ async def get_gemini():
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
             TextDisplay(text="Input"),
-            TextItem(label="API Key", placeholder="sk-...", type="password"),
-            DropdownItem(label="Model", options=["gemini-1.5-flash", "gemini-1.5-pro"]),
+            TextItem(label="API Key", placeholder="sk-...", type="password", hasHandle=True, handleStyle={"top": 104}),
+            DropdownItem(label="Model", options=["gemini-1.5-flash", "gemini-1.5-pro"], hasHandle=True, handleStyle={"top": 134}),
             TextDisplay(text="Output"),
             HandleElement(label="Gemini", position="right", type="source", style={"bottom": 12, "top": "auto"}),
         ]
@@ -51,9 +51,9 @@ async def get_ollama():
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
             TextDisplay(text="Input"),
-            TextItem(label="Base URL", placeholder="http://localhost:1234", type="url"),
-            DropdownItem(label="Model", options=["llama3", "llama2"]),
-            SliderItem(label="Temperature", min=0.0, max=2.0, step=0.01, initial=0.7),
+            TextItem(label="Base URL", placeholder="http://localhost:1234", type="url", hasHandle=True, handleStyle={"top": 104}),
+            DropdownItem(label="Model", options=["llama3", "llama2"], hasHandle=True, handleStyle={"top": 134}),
+            SliderItem(label="Temperature", min=0.0, max=2.0, step=0.01, initial=0.7, hasHandle=True, handleStyle={"top": 174}),
             TextDisplay(text="Output"),
             HandleElement(label="Ollama", position="right", type="source", style={"bottom": 12, "top": "auto"}),
         ]

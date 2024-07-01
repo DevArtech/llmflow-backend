@@ -13,54 +13,7 @@ CSS = """
 """
 
 app = FastAPI()
-io = gr.Blocks(css=CSS)
-model = Model()
-
-ELEMENTS_PER_ROW = 4
-
-def render_elements(chat_interface: Optional[Any] = None, input_elements: Optional[List[Any]] = None, output_elements: Optional[List[Any]] = None):
-    io.clear()
-
-    if input_elements == None:
-        input_elements = [gr.Markdown(
-            """
-            # Welcome to LLMFlow!
-            Add some input and output nodes to see the magic happen!
-            """
-        )]
-
-    if output_elements == None:
-        output_elements = []
-
-    with io:
-        if chat_interface:
-            chat_interface.render()
-        else:
-            with gr.Row():
-                with gr.Column():
-                    with gr.Row():
-                        if len(input_elements) > 0:
-                            input_elements[0].render()
-                    if len(input_elements) > 1:
-                        for i in range(len(input_elements))[1::ELEMENTS_PER_ROW]:
-                            with gr.Row():
-                                for element in input_elements[i:i+ELEMENTS_PER_ROW]:
-                                    element.render()
-                        if chat_interface is None:
-                            with gr.Row():
-                                btn = gr.Button("Submit", size="sm", variant="primary")
-                                btn.click(fn=model.execute_model, inputs=input_elements[1:], outputs=output_elements[1:])
-
-                if chat_interface is None: 
-                    with gr.Column():
-                        with gr.Row():
-                            if len(output_elements) > 0:
-                                output_elements[0].render()
-                        if len(output_elements) > 1:
-                            for i in range(len(output_elements))[1::ELEMENTS_PER_ROW]:
-                                with gr.Row():
-                                    for element in output_elements[i:i+ELEMENTS_PER_ROW]:
-                                        element.render()
+model = Model(io=gr.Blocks(css=CSS))
 
 app.add_middleware(
     CORSMiddleware,
@@ -102,7 +55,6 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
         Dict: Returns a JSON response with the success status
     """
 
-    global input_elements, output_elements
     request_model = architecture.model
     if not model.compare_json(request_model):
         chat_interface = None
@@ -112,7 +64,7 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
         model_schema = {}
         
         if not request_model["Nodes"]:
-            render_elements()
+            model.render_elements()
             return {"success": True}
         
         # try:
@@ -210,10 +162,10 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
         # except Exception as e:
         #     raise HTTPException(status_code=400, detail=f"Invalid model architecture provided. Error: {e}")
         
-        render_elements(chat_interface=chat_interface, input_elements=input_elements, output_elements=output_elements)
+        model.render_elements(chat_interface=chat_interface, input_elements=input_elements, output_elements=output_elements)
     return {"success": True}
 
-render_elements()
+model.render_elements()
 
-app = gr.mount_gradio_app(app, io, path="/gradio")
+app = gr.mount_gradio_app(app, model.io, path="/gradio")
 app.include_router(api_router, prefix="/api/v1")
