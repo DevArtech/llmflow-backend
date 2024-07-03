@@ -12,6 +12,7 @@ gradio = "*"
 openai = "*"
 langchain = "*"
 langchain-openai = "*"
+black = "*"
 
 [dev-packages]
 
@@ -20,3 +21,4 @@ python_version = "3.11"
 
 [scripts]
 start = "uvicorn --app-dir src main:app --reload"
+format = "python -m black src"

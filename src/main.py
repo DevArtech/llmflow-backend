@@ -23,7 +23,14 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-@app.get("/", summary="Perform a Health Check", response_description="Return HTTP Status Code 200 (OK)", status_code=status.HTTP_200_OK, response_model=HealthCheck)
+
+@app.get(
+    "/",
+    summary="Perform a Health Check",
+    response_description="Return HTTP Status Code 200 (OK)",
+    status_code=status.HTTP_200_OK,
+    response_model=HealthCheck,
+)
 def get_health() -> HealthCheck:
     """
     ## Perform a Health Check
@@ -36,7 +43,13 @@ def get_health() -> HealthCheck:
     """
     return HealthCheck(status="OK")
 
-@app.get("/api/v1/integrations", summary="Get all available integrations", response_description="Return a list of all available integrations", status_code=status.HTTP_200_OK, response_model=AvailableIntegrations)
+
+@app.get(
+    "/api/v1/integrations",
+    summary="Get all available integrations",
+    response_description="Return a list of all available integrations",
+    response_model=AvailableIntegrations,
+)
 def get_integrations() -> AvailableIntegrations:
     """
     ## Get all available integrations
@@ -46,7 +59,13 @@ def get_integrations() -> AvailableIntegrations:
     """
     return AvailableIntegrations(integrations=["Inputs", "Chat", "LLMs", "Outputs"])
 
-@app.post("/api/v1/update-architecture", summary="Update the current Gradio architecture", response_description="Success on if the JSON is valid for the architecture", status_code=status.HTTP_200_OK)
+
+@app.post(
+    "/api/v1/update-architecture",
+    summary="Update the current Gradio architecture",
+    response_description="Success on if the JSON is valid for the architecture",
+    response_model=Response,
+)
 def update_architecture(architecture: ArchitectureContract) -> Dict:
     """
     ## Update the current Gradio architecture
@@ -62,108 +81,197 @@ def update_architecture(architecture: ArchitectureContract) -> Dict:
         output_elements = [gr.Markdown("# Output")]
         elements = {}
         model_schema = {}
-        
-        if not request_model["Nodes"]:
+
+        if not request_model.get("Nodes") or not request_model.get("Edges"):
             model.render_elements()
             return {"success": True}
-        
-        # try:
-        for node in request_model["Nodes"]:
-            if "Chat" in node["Name"]:
-                input_elements.pop(0)
-                # input_elements.insert(0, gr.Markdown("# Additional Inputs"))
-                output_elements = None
-                chat_obj = None
-                if node["Name"] == "Text-Only Chat":
-                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
-                    chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=False, fill_height=True, additional_inputs=input_elements, chatbot=gr.Chatbot(
-                        label=label,
-                        rtl=node["Items"][2]["Value"],
-                        likeable=node["Items"][3]["Value"],
-                        elem_id="chat_chatbot"
-                    ), textbox=gr.Textbox(placeholder=node["Items"][1]["Value"], rtl=node["Items"][2]["Value"], elem_id="chat_texbox"))
 
-                if node["Name"] == "Multimodal Chat":
-                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Chat"
-                    chat_obj = gr.ChatInterface(fn=model.execute_chat, multimodal=True, fill_height=True, chatbot=gr.Chatbot(
-                        label=label,
-                        rtl=node["Items"][2]["Value"],
-                        likeable=node["Items"][3]["Value"],
-                        elem_id="chat_chatbot"
-                    ), textbox=gr.MultimodalTextbox(placeholder=node["Items"][1]["Value"], rtl=node["Items"][2]["Value"], elem_id="chat_multimodal"))
-                
-                chat_interface = chat_obj
-                elements[node["Id"]] = chat_obj
-            
-            if "Input" in node["Name"]:
-                input_obj = None
-                if node["Name"] == "Text Input":
-                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Textbox"
-                    input_obj = gr.Textbox(label=label, placeholder=node["Items"][1]["Value"], type=node["Items"][2]["Value"], elem_id=node["Id"])
-                if node["Name"] == "Image Input":
-                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Image"
-                    input_obj = gr.Image(label=label, elem_id=node["Id"])
-                if node["Name"] == "Audio Input":
-                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Audio"
-                    input_obj = gr.Audio(label=label, elem_id=node["Id"])
-                if node["Name"] == "Video Input":
-                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Video"
-                    input_obj = gr.Video(label=label, elem_id=node["Id"])                              
-                if node["Name"] == "File Input":
-                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "File"
-                    input_obj = gr.File(label=label, elem_id=node["Id"])
+        try:
+            for node in request_model["Nodes"]:
+                if "Chat" in node["Name"]:
+                    input_elements.pop(0)
+                    output_elements = None
+                    chat_obj = None
+                    if node["Name"] == "Text-Only Chat":
+                        label = (
+                            node["Items"][0]["Value"]
+                            if node["Items"][0]["Value"] != ""
+                            else "Chat"
+                        )
+                        chat_obj = gr.ChatInterface(
+                            fn=model.execute_chat,
+                            multimodal=False,
+                            fill_height=True,
+                            additional_inputs=input_elements,
+                            chatbot=gr.Chatbot(
+                                label=label,
+                                rtl=node["Items"][2]["Value"],
+                                likeable=node["Items"][3]["Value"],
+                                elem_id="chat_chatbot",
+                            ),
+                            textbox=gr.Textbox(
+                                placeholder=node["Items"][1]["Value"],
+                                rtl=node["Items"][2]["Value"],
+                                elem_id="chat_texbox",
+                            ),
+                        )
 
-                input_elements.append(input_obj)
-                elements[node["Id"]] = input_obj
+                    if node["Name"] == "Multimodal Chat":
+                        label = (
+                            node["Items"][0]["Value"]
+                            if node["Items"][0]["Value"] != ""
+                            else "Chat"
+                        )
+                        chat_obj = gr.ChatInterface(
+                            fn=model.execute_chat,
+                            multimodal=True,
+                            fill_height=True,
+                            chatbot=gr.Chatbot(
+                                label=label,
+                                rtl=node["Items"][2]["Value"],
+                                likeable=node["Items"][3]["Value"],
+                                elem_id="chat_chatbot",
+                            ),
+                            textbox=gr.MultimodalTextbox(
+                                placeholder=node["Items"][1]["Value"],
+                                rtl=node["Items"][2]["Value"],
+                                elem_id="chat_multimodal",
+                            ),
+                        )
 
-            if "LLM" in node["Name"]:
-                llm_obj = None
-                if node["Name"] == "OpenAI LLM":
-                    llm_obj = gr.Textbox(visible=False, elem_id=node["Id"])
+                    chat_interface = chat_obj
+                    elements[node["Id"]] = chat_obj
 
-                elements[node["Id"]] = llm_obj
+                if "Input" in node["Name"]:
+                    input_obj = None
+                    if node["Name"] == "Text Input":
+                        label = (
+                            node["Items"][0]["Value"]
+                            if node["Items"][0]["Value"] != ""
+                            else "Textbox"
+                        )
+                        input_obj = gr.Textbox(
+                            label=label,
+                            placeholder=node["Items"][1]["Value"],
+                            type=node["Items"][2]["Value"],
+                            elem_id=node["Id"],
+                        )
+                    if node["Name"] == "Image Input":
+                        label = (
+                            node["Items"][0]["Value"]
+                            if node["Items"][0]["Value"] != ""
+                            else "Image"
+                        )
+                        input_obj = gr.Image(label=label, elem_id=node["Id"])
+                    if node["Name"] == "Audio Input":
+                        label = (
+                            node["Items"][0]["Value"]
+                            if node["Items"][0]["Value"] != ""
+                            else "Audio"
+                        )
+                        input_obj = gr.Audio(label=label, elem_id=node["Id"])
+                    if node["Name"] == "Video Input":
+                        label = (
+                            node["Items"][0]["Value"]
+                            if node["Items"][0]["Value"] != ""
+                            else "Video"
+                        )
+                        input_obj = gr.Video(label=label, elem_id=node["Id"])
+                    if node["Name"] == "File Input":
+                        label = (
+                            node["Items"][0]["Value"]
+                            if node["Items"][0]["Value"] != ""
+                            else "File"
+                        )
+                        input_obj = gr.File(label=label, elem_id=node["Id"])
 
-            elif "Output" in node["Name"]:
-                output_obj = None
-                if node["Name"] == "Text Output":
-                    label = node["Items"][0]["Value"] if node["Items"][0]["Value"] != "" else "Result"
-                    output_obj = gr.Textbox(label=label, placeholder=node["Items"][1]["Value"], interactive=False, elem_id=node["Id"])
-                    
-                output_elements.append(output_obj)
-                elements[node["Id"]] = output_obj
+                    input_elements.append(input_obj)
+                    elements[node["Id"]] = input_obj
 
-        for edge in request_model["Edges"]:
-            source_node = request_model["Nodes"][int(edge["Source"]) - 1]
-            source_element = elements[source_node["Id"]]
-            target_node = request_model["Nodes"][int(edge["Target"]) - 1]
+                if "LLM" in node["Name"]:
+                    llm_obj = None
+                    if node["Name"] == "OpenAI LLM":
+                        llm_obj = gr.Textbox(visible=False, elem_id=node["Id"])
 
-            func = model.get_function(target_node)
+                    elements[node["Id"]] = llm_obj
 
-            if model_schema and source_element is model_schema[list(model_schema.keys())[-1]]["source"]:
-                model_schema[list(model_schema.keys())[-1]]["func"].append(func)
-            else:
-                # target_node['Id'] only works for now so long as nodes only have one input. Should update later to handle multiple inputs
-                model_schema[target_node['Id']] = {"source": source_element, "func": [func], "args": [target_node["Items"]], "overrides": []}
+                elif "Output" in node["Name"]:
+                    output_obj = None
+                    if node["Name"] == "Text Output":
+                        label = (
+                            node["Items"][0]["Value"]
+                            if node["Items"][0]["Value"] != ""
+                            else "Result"
+                        )
+                        output_obj = gr.Textbox(
+                            label=label,
+                            placeholder=node["Items"][1]["Value"],
+                            interactive=False,
+                            elem_id=node["Id"],
+                        )
 
-        for parameter_edge in request_model["ParameterEdges"]:
-            source_node = request_model["Nodes"][int(parameter_edge["Source"]) - 1]
-            source_element = elements[source_node["Id"]]
-            target_node = request_model["Nodes"][int(parameter_edge["Target"]) - 1]
+                    output_elements.append(output_obj)
+                    elements[node["Id"]] = output_obj
 
-            item = model_schema[target_node['Id']]
-            override = model.get_override(target_node, parameter_edge["Target Handle"])
-            item["overrides"].append({override: input_elements.index(source_element) - 1 if chat_interface is None else input_elements.index(source_element)})
-            model_schema[target_node['Id']] = item
+            for edge in request_model["Edges"]:
+                source_node = request_model["Nodes"][int(edge["Source"]) - 1]
+                source_element = elements[source_node["Id"]]
+                target_node = request_model["Nodes"][int(edge["Target"]) - 1]
 
+                func = model.get_function(target_node)
 
-        model.set_model(model_schema)
-        model.store_json(request_model)
+                if (
+                    model_schema
+                    and source_element
+                    is model_schema[list(model_schema.keys())[-1]]["source"]
+                ):
+                    model_schema[list(model_schema.keys())[-1]]["func"].append(func)
+                else:
+                    # target_node['Id'] only works for now so long as nodes only have one input. Should update later to handle multiple inputs
+                    model_schema[target_node["Id"]] = {
+                        "source": source_element,
+                        "func": [func],
+                        "args": [target_node["Items"]],
+                        "overrides": [],
+                    }
 
-        # except Exception as e:
-        #     raise HTTPException(status_code=400, detail=f"Invalid model architecture provided. Error: {e}")
-        
-        model.render_elements(chat_interface=chat_interface, input_elements=input_elements, output_elements=output_elements)
-    return {"success": True}
+            for parameter_edge in request_model["ParameterEdges"]:
+                source_node = request_model["Nodes"][int(parameter_edge["Source"]) - 1]
+                source_element = elements[source_node["Id"]]
+                target_node = request_model["Nodes"][int(parameter_edge["Target"]) - 1]
+
+                item = model_schema[target_node["Id"]]
+                override = model.get_override(
+                    target_node, parameter_edge["Target Handle"]
+                )
+                item["overrides"].append(
+                    {
+                        override: (
+                            input_elements.index(source_element) - 1
+                            if chat_interface is None
+                            else input_elements.index(source_element)
+                        )
+                    }
+                )
+                model_schema[target_node["Id"]] = item
+
+            model.set_model(model_schema)
+            model.store_json(request_model)
+
+        except Exception as e:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid model architecture provided. Error: {e}",
+            )
+
+        model.render_elements(
+            chat_interface=chat_interface,
+            input_elements=input_elements,
+            output_elements=output_elements,
+        )
+
+    return Response(status_code=status.HTTP_200_OK)
+
 
 model.render_elements()
 
