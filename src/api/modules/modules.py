@@ -326,5 +326,5 @@ class NodeContract(BaseModel):
     name: Optional[str] = None
     items: Optional[List[Dict[str, Union[Any, NodeItem]]]] = None
 
-    def to_dict(self):
+    def json(self):
         raise NotImplementedError("Method to_dict not implemented")
