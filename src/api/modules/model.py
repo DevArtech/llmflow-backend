@@ -104,6 +104,7 @@ class Model(BaseModel):
                                 dictionary["Value"] = args[0][ovrd_value + 2]
                             else:
                                 dictionary["Value"] = args[ovrd_value]
+
             final_result = []
             for idx, func in enumerate(value["func"]):
                 temp_data = None
@@ -148,6 +149,14 @@ class Model(BaseModel):
         )
 
     def get_function(self, node: Dict[str, Any]):
+        if node["Name"] == "System Prompt":
+
+            def function(data, *args):
+                if args[0][0]["Value"] != "":
+                    return SystemMessage(content=args[0][0]["Value"])
+
+                return SystemMessage(content=data)
+
         if node["Name"] == "OpenAI LLM":
 
             def function(data, *args):

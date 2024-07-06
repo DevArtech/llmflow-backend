@@ -39,12 +39,23 @@ class OpenAILLM(BaseModel):
             self.cache = initial_cache
 
     def invoke(self, data: str) -> AIMessage:
+        # Santize the input data
         if isinstance(data, list) or isinstance(data, tuple):
+            # Check to ensure that the first element is not an AIMessage
+            if isinstance(data[0], AIMessage):
+                raise ValueError("Cannot invoke LLM with AIMessage.")
+
+            # If list is a conversation, invoke the model
+            if isinstance(data[0], SystemMessage) or isinstance(data[0], HumanMessage):
+                return self.model.invoke(data)
+
+            # If the list is not any of the above, just take the first element
             prompt = data[0]
         elif isinstance(data, dict):
             prompt = data["text"]
         else:
             prompt = data
 
+        # Add the prompt to the cache and invoke the model
         conversation = self.cache + [HumanMessage(content=prompt.strip())]
         return self.model.invoke(conversation)

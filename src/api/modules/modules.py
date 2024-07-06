@@ -13,14 +13,14 @@ class HealthCheck(BaseModel):
 class AvailableOptions(BaseModel):
     """Response model to validate and return all available options under an endpoint."""
 
-    options: Union[List[str], List[Dict[str, str]]] = [
-        "Text-Chat",
-        "Multimodal",
-        "Text",
-        "Image",
-        "Audio",
-        "Video",
-        "File",
+    options: Union[List[Dict[str, str]]] = [
+        {"name": "Text-Chat", "details": "Text-Only Chat Input/Output"},
+        {"name": "Multimodal", "details": "Multimodal Chat Input/Output"},
+        {"name": "Text", "details": "Text Input"},
+        {"name": "Image", "details": "Image Input"},
+        {"name": "OpenAI", "details": "OpenAI LLM"},
+        {"name": "Video", "details": "Video Output"},
+        {"name": "File", "details": "File Output"},
     ]
 
 
