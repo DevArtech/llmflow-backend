@@ -22,7 +22,13 @@ router = APIRouter()
     response_model=AvailableOptions,
 )
 async def get_models():
-    return AvailableOptions(options=["OpenAI", "Gemini", "Ollama"])
+    return AvailableOptions(
+        options=[
+            {"name": "OpenAI", "detail": "OpenAI LLM"},
+            {"name": "Gemini", "detail": "Gemini LLM"},
+            {"name": "Ollama", "detail": "Ollama LLM"},
+        ]
+    )
 
 
 @router.get(

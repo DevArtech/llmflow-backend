@@ -3,7 +3,7 @@ import gradio as gr
 from typing import Dict, List, Any, Optional
 from api.modules.modules import *
 from api.modules.model import Model
-from fastapi import FastAPI, status, HTTPException
+from fastapi import FastAPI, status, HTTPException, Response
 from api.api import router as api_router
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -64,9 +64,9 @@ def get_integrations() -> AvailableIntegrations:
     "/api/v1/update-architecture",
     summary="Update the current Gradio architecture",
     response_description="Success on if the JSON is valid for the architecture",
-    response_model=Response,
+    response_model=None,
 )
-def update_architecture(architecture: ArchitectureContract) -> Dict:
+def update_architecture(architecture: ArchitectureContract) -> None:
     """
     ## Update the current Gradio architecture
     Endpoint to update the current Gradio architecture with the JSON provided.

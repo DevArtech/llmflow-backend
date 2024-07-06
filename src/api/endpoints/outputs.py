@@ -20,8 +20,16 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
     response_model=AvailableOptions,
 )
-async def get_models():
-    return AvailableOptions(options=["Text", "Image", "Audio", "Video", "File"])
+async def get_outputs():
+    return AvailableOptions(
+        options=[
+            {"name": "Text", "detail": "Text Output"},
+            {"name": "Image", "detail": "Image Output"},
+            {"name": "Audio", "detail": "Audio Output"},
+            {"name": "Video", "detail": "Video Output"},
+            {"name": "File", "detail": "File Output"},
+        ]
+    )
 
 
 @router.get(

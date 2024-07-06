@@ -4,16 +4,6 @@ from typing import List, Dict, Optional, Any, Union
 from enum import Enum
 
 
-class status(Enum):
-    HTTP_200_OK = "OK"
-
-
-class Response(BaseModel):
-    """Response model to validate an endpoint if no other response is needed."""
-
-    status_code: status = status.HTTP_200_OK
-
-
 class HealthCheck(BaseModel):
     """Response model to validate and return when performing a health check."""
 
@@ -23,7 +13,7 @@ class HealthCheck(BaseModel):
 class AvailableOptions(BaseModel):
     """Response model to validate and return all available options under an endpoint."""
 
-    options: List[str] = [
+    options: Union[List[str], List[Dict[str, str]]] = [
         "Text-Chat",
         "Multimodal",
         "Text",

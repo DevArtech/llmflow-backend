@@ -20,7 +20,12 @@ router = APIRouter()
     response_model=AvailableOptions,
 )
 async def get_chats():
-    return AvailableOptions(options=["Text-Chat", "Multimodal-Chat"])
+    return AvailableOptions(
+        options=[
+            {"name": "Text-Chat", "detail": "Text-Only Chat Input/Output"},
+            {"name": "Multimodal-Chat", "detail": " Multimodal Chat Input/Output"},
+        ]
+    )
 
 
 @router.get(
