@@ -55,7 +55,7 @@ class Node(BaseModel):
 
     icon: Optional[str] = None
     name: Optional[str] = None
-    items: Optional[List[Union[NodeItem]]] = None
+    items: Optional[List[NodeItem]] = None
 
     def json(self, **kwargs) -> Dict[str, Any]:
         node_items = [item.to_dict() for item in self.items] if self.items else []
