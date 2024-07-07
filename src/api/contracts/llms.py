@@ -68,9 +68,6 @@ async def get_openai():
                 hasHandle=True,
                 handleStyle={"top": 174},
             ),
-            TextAreaItem(
-                label="System Message", hasHandle=True, handleStyle={"top": 211}
-            ),
             TextDisplay(text="Output"),
             HandleElement(
                 label="OpenAI",

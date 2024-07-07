@@ -1,15 +1,17 @@
+import inspect
 import gradio as gr
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
-from ..models.llms.openai import OpenAILLM
+from ..models.openai import OpenAILLM
 from langchain_core.messages import SystemMessage
+from ..modules.modules import ListNode
 
 
 class Model(BaseModel):
     io: Any
     ELEMENTS_PER_ROW: int = 4
     stored_json: Optional[Dict[str, Any]] = None
-    model_store: Dict[int, Dict[str, Any]] = {}
+    model_store: List = []
 
     def store_json(self, json_data: Dict[str, Any]):
         self.stored_json = json_data
@@ -22,6 +24,7 @@ class Model(BaseModel):
 
     def set_model(self, model: List):
         self.model_store = model
+        self.model_store.sort(key=lambda x: x.idx)
 
     def get_model(self):
         return self.model_store
@@ -93,28 +96,28 @@ class Model(BaseModel):
 
     def execute_model(self, *args):
         data = args
-        for i, value in self.model_store.items():
-            if value["overrides"]:
-                for override in value["overrides"]:
-                    ovrd_key = list(override.keys())[0]
-                    ovrd_value = int(override[ovrd_key])
-                    for dictionary in value["args"][0]:
-                        if "Type" in dictionary and dictionary["Type"] == ovrd_key:
-                            if isinstance(args[0], tuple):
-                                dictionary["Value"] = args[0][ovrd_value + 2]
-                            else:
-                                dictionary["Value"] = args[ovrd_value]
+        for node in self.model_store:
+            for override in node.overrides:
+                ovrd_key = list(override.keys())[0]
+                ovrd_value = int(override[ovrd_key])
+                for dictionary in node.args:
+                    if "Type" in dictionary and dictionary["Type"] == ovrd_key:
+                        if isinstance(args[0], tuple):
+                            dictionary["Value"] = args[0][ovrd_value + 2]
+                        else:
+                            dictionary["Value"] = args[ovrd_value]
 
             final_result = []
-            for idx, func in enumerate(value["func"]):
+            for idx, func in enumerate(node.func):
                 temp_data = None
-                if type(data) == list or type(data) == tuple:
+                if isinstance(data, list) or isinstance(data, tuple):
                     try:
-                        temp_data = func(data[idx], *value["args"])
+                        temp_data = func(data[idx], *node.args)
                     except IndexError:
-                        temp_data = func(data[0], *value["args"])
+                        temp_data = func(data[0], *node.args)
                 else:
-                    temp_data = func(data, *value["args"])
+                    temp_data = func(data, *node.args)
+
                 final_result.append(temp_data)
 
             data = final_result
@@ -151,23 +154,16 @@ class Model(BaseModel):
     def get_function(self, node: Dict[str, Any]):
         if node["Name"] == "System Prompt":
 
-            def function(data, *args):
-                if args[0][0]["Value"] != "":
-                    return SystemMessage(content=args[0][0]["Value"])
+            def function(data, *args):                   
+                return [SystemMessage(content=args[0]["Value"]), data]
 
-                return SystemMessage(content=data)
-
-        if node["Name"] == "OpenAI LLM":
+        elif node["Name"] == "OpenAI LLM":
 
             def function(data, *args):
-                initial_cache = None
-                if args[0][3]["Value"] != "":
-                    initial_cache = [SystemMessage(content=args[0][3]["Value"])]
                 model = OpenAILLM(
-                    api_key=args[0][0]["Value"],
-                    model_type=args[0][1]["Value"],
-                    temperature=float(args[0][2]["Value"]),
-                    initial_cache=initial_cache,
+                    api_key=args[0]["Value"],
+                    model_type=args[1]["Value"],
+                    temperature=float(args[2]["Value"]),
                 )
                 return model.invoke(data).content
 
@@ -186,5 +182,7 @@ class Model(BaseModel):
                 return "Model"
             if handle == "element_4":
                 return "Temperature"
-            if handle == "element_5":
-                return "System Message"
+
+        if node["Name"] == "System Prompt":
+            if handle == "element_1":
+                return "Prompt"

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from .endpoints import llms, inputs, outputs, chat, helpers
+from .contracts import llms, inputs, outputs, chat, helpers
 
 router = APIRouter()
 router.include_router(inputs.router, prefix="/inputs", tags=["Input Options"])

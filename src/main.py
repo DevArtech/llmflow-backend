@@ -1,9 +1,9 @@
 import json
 import gradio as gr
-from typing import Dict, List, Any, Optional
+from typing import List
 from api.modules.modules import *
 from api.modules.model import Model
-from fastapi import FastAPI, status, HTTPException, Response
+from fastapi import FastAPI, status, Response
 from api.api import router as api_router
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -88,7 +88,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
         input_elements = [gr.Markdown("# Input")]
         output_elements = [gr.Markdown("# Output")]
         elements = {}
-        model_schema = {}
+        model_schema: List = []
 
         if not request_model.get("Nodes") or not request_model.get("Edges"):
             model.render_elements()
@@ -225,48 +225,71 @@ def update_architecture(architecture: ArchitectureContract) -> None:
                 if node["Name"] == "System Prompt":
                     elements[node["Id"]] = gr.Textbox(visible=False, elem_id=node["Id"])
 
+        normal_edges = [
+            edge for edge in request_model["Edges"] if edge["Type"] == "Normal"
+        ]
+        data_edges = [edge for edge in request_model["Edges"] if edge["Type"] == "Data"]
 
-        for edge in request_model["Edges"]:
+        for edge in normal_edges:
             source_node = request_model["Nodes"][int(edge["Source"]) - 1]
-            source_element = elements[source_node["Id"]]
             target_node = request_model["Nodes"][int(edge["Target"]) - 1]
 
             func = model.get_function(target_node)
 
-            if (
-                model_schema
-                and source_element
-                is model_schema[list(model_schema.keys())[-1]]["source"]
-            ):
-                model_schema[list(model_schema.keys())[-1]]["func"].append(func)
+            for node in model_schema:
+                if node.idx == int(target_node["Id"]):
+                    node.sources.append(int(source_node["Id"]))
+                    break
             else:
-                # target_node['Id'] only works for now so long as nodes only have one input. Should update later to handle multiple inputs
-                model_schema[target_node["Id"]] = {
-                    "source": source_element,
-                    "func": [func],
-                    "args": [target_node["Items"]],
-                    "overrides": [],
-                }
-
-        for parameter_edge in request_model["ParameterEdges"]:
-            source_node = request_model["Nodes"][int(parameter_edge["Source"]) - 1]
-            source_element = elements[source_node["Id"]]
-            target_node = request_model["Nodes"][int(parameter_edge["Target"]) - 1]
-
-            item = model_schema[target_node["Id"]]
-            override = model.get_override(
-                target_node, parameter_edge["Target Handle"]
-            )
-            item["overrides"].append(
-                {
-                    override: (
-                        input_elements.index(source_element) - 1
-                        if chat_interface is None
-                        else input_elements.index(source_element)
+                model_schema.append(
+                    ListNode(
+                        idx=target_node["Id"],
+                        sources=[int(source_node["Id"])],
+                        func=[func],
+                        args=target_node["Items"],
+                        overrides=[],
                     )
-                }
-            )
-            model_schema[target_node["Id"]] = item
+                )
+
+        for edge in data_edges:
+            source_node = request_model["Nodes"][int(edge["Source"]) - 1]
+            source_element = elements[source_node["Id"]]
+            target_node = request_model["Nodes"][int(edge["Target"]) - 1]
+
+            override = model.get_override(target_node, edge["Target Handle"])
+
+            for node in model_schema:
+                if node.idx == int(target_node["Id"]):
+                    node.overrides.append(
+                        {
+                            override: (
+                                input_elements.index(source_element) - 1
+                                if chat_interface is None
+                                else input_elements.index(source_element)
+                            )
+                        }
+                    )
+                    break
+            else:
+                func = model.get_function(target_node)
+
+                model_schema.append(
+                    ListNode(
+                        idx=target_node["Id"],
+                        sources=[int(source_node["Id"])],
+                        func=[func],
+                        args=target_node["Items"],
+                        overrides=[
+                            {
+                                override: (
+                                    input_elements.index(source_element) - 1
+                                    if chat_interface is None
+                                    else input_elements.index(source_element)
+                                )
+                            }
+                        ],
+                    )
+                )
 
         model.set_model(model_schema)
         model.store_json(request_model)

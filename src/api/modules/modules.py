@@ -1,6 +1,7 @@
 import json
+import gradio as gr
 from pydantic import BaseModel
-from typing import List, Dict, Optional, Any, Union
+from typing import List, Dict, Optional, Any, Union, Callable
 from enum import Enum
 
 
@@ -328,3 +329,13 @@ class NodeContract(BaseModel):
 
     def json(self):
         raise NotImplementedError("Method to_dict not implemented")
+
+
+class ListNode(BaseModel):
+    """A node in a list of nodes."""
+
+    idx: int
+    sources: List[int]
+    func: List[Callable]
+    args: List[Dict[str, Any]]
+    overrides: Optional[List[Dict[str, int]]] = None

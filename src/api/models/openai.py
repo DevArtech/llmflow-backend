@@ -47,6 +47,12 @@ class OpenAILLM(BaseModel):
 
             # If list is a conversation, invoke the model
             if isinstance(data[0], SystemMessage) or isinstance(data[0], HumanMessage):
+                if len(data) > 1 and not isinstance(data[-1], HumanMessage):
+                    if isinstance(data[-1], tuple):
+                        data[-1] = HumanMessage(content=data[-1][0].strip())
+                    else:
+                        data[-1] = HumanMessage(content=data[-1].strip())
+
                 return self.model.invoke(data)
 
             # If the list is not any of the above, just take the first element
