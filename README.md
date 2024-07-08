@@ -33,6 +33,6 @@ This project uses `python-semantic-release` which will automatically update the 
 
 An example of a commit message which would initate a version change is: `feat: added world domination`
 
-> All changes will be reflected in the [Changelog.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md)
+> All major, minor, and patch changes will be reflected in the [Changelog.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md)
 
 You can check the current version by running `pipenv run version`
