@@ -13,6 +13,7 @@ openai = "*"
 langchain = "*"
 langchain-openai = "*"
 black = "*"
+python-semantic-release="*"
 
 [dev-packages]
 
