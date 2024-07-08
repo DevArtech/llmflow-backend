@@ -1,6 +1,6 @@
-import json
 import gradio as gr
 from typing import List
+from version import __version__
 from api.modules.modules import *
 from api.modules.model import Model
 from fastapi import FastAPI, status, Response
@@ -18,7 +18,7 @@ All you need to do is drag and drop the components you need and connect them tog
 Results are displayed in real-time and you can even chat with your model using the live rendering.
 """
 
-app = FastAPI(title="LLMFLow", description=DESC, version="0.1.0")
+app = FastAPI(title="LLMFLow", description=DESC, version=__version__)
 model = Model(io=gr.Blocks(css=CSS))
 
 app.add_middleware(
