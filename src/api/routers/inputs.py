@@ -4,7 +4,7 @@ from ..modules.modules import (
     TextItem,
     DropdownItem,
     Node,
-    NodeContract,
+    Node,
     TextDisplay,
     HandleElement,
 )
@@ -15,7 +15,7 @@ router = APIRouter()
 @router.get(
     "/",
     summary="Get all available input options",
-    response_description="Return HTTP Status Code 200 (OK)",
+    response_description="Return the available input options",
     status_code=status.HTTP_200_OK,
     response_model=AvailableOptions,
 )
@@ -36,20 +36,20 @@ async def get_inputs():
     summary="Get a text-based input node",
     response_description="Return the text-based input node",
     status_code=status.HTTP_200_OK,
-    response_model=NodeContract,
+    response_model=Node,
 )
 async def get_text_input_node():
     node = Node(
         icon="Rtt",
         name="Text Input",
         items=[
-            TextDisplay(text="Input"),
+            TextDisplay(label="Input"),
             TextItem(label="Label", placeholder="Textbox"),
             TextItem(label="Placeholder", placeholder=""),
             DropdownItem(
                 label="Type", options=["text", "password", "email"], initial=0
             ),
-            TextDisplay(text="Output"),
+            TextDisplay(label="Output"),
             HandleElement(
                 label="Prompt",
                 position="right",
@@ -59,7 +59,7 @@ async def get_text_input_node():
         ],
     )
 
-    return node.json()
+    return node
 
 
 @router.get(
@@ -67,16 +67,16 @@ async def get_text_input_node():
     summary="Get a image-based input node",
     response_description="Return the image-based input node",
     status_code=status.HTTP_200_OK,
-    response_model=NodeContract,
+    response_model=Node,
 )
 async def get_image_input_node():
     node = Node(
         icon="Image",
         name="Image Input",
         items=[
-            TextDisplay(text="Input"),
+            TextDisplay(label="Input"),
             TextItem(label="Label", placeholder="Image"),
-            TextDisplay(text="Output"),
+            TextDisplay(label="Output"),
             HandleElement(
                 label="Image",
                 position="right",
@@ -86,7 +86,7 @@ async def get_image_input_node():
         ],
     )
 
-    return node.json()
+    return node
 
 
 @router.get(
@@ -94,16 +94,16 @@ async def get_image_input_node():
     summary="Get a audio-based input node",
     response_description="Return the audio-based input node",
     status_code=status.HTTP_200_OK,
-    response_model=NodeContract,
+    response_model=Node,
 )
 async def get_audio_input_node():
     node = Node(
         icon="Mic",
         name="Audio Input",
         items=[
-            TextDisplay(text="Input"),
+            TextDisplay(label="Input"),
             TextItem(label="Label", placeholder="Audio"),
-            TextDisplay(text="Output"),
+            TextDisplay(label="Output"),
             HandleElement(
                 label="Audio",
                 position="right",
@@ -113,7 +113,7 @@ async def get_audio_input_node():
         ],
     )
 
-    return node.json()
+    return node
 
 
 @router.get(
@@ -121,16 +121,16 @@ async def get_audio_input_node():
     summary="Get a video-based input node",
     response_description="Return the video-based input node",
     status_code=status.HTTP_200_OK,
-    response_model=NodeContract,
+    response_model=Node,
 )
 async def get_video_input_node():
     node = Node(
         icon="Movie",
         name="Video Input",
         items=[
-            TextDisplay(text="Input"),
+            TextDisplay(label="Input"),
             TextItem(label="Label", placeholder="Video"),
-            TextDisplay(text="Output"),
+            TextDisplay(label="Output"),
             HandleElement(
                 label="Video",
                 position="right",
@@ -140,7 +140,7 @@ async def get_video_input_node():
         ],
     )
 
-    return node.json()
+    return node
 
 
 @router.get(
@@ -148,16 +148,16 @@ async def get_video_input_node():
     summary="Get a file-based input node",
     response_description="Return the file-based input node",
     status_code=status.HTTP_200_OK,
-    response_model=NodeContract,
+    response_model=Node,
 )
 async def get_file_input_node():
     node = Node(
         icon="InsertDriveFile",
         name="File Input",
         items=[
-            TextDisplay(text="Input"),
+            TextDisplay(label="Input"),
             TextItem(label="Label", placeholder="File"),
-            TextDisplay(text="Output"),
+            TextDisplay(label="Output"),
             HandleElement(
                 label="File",
                 position="right",
@@ -167,4 +167,4 @@ async def get_file_input_node():
         ],
     )
 
-    return node.json()
+    return node

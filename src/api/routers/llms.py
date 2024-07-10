@@ -8,7 +8,7 @@ from ..modules.modules import (
     TextDisplay,
     HandleElement,
     TextAreaItem,
-    NodeContract,
+    Node,
 )
 
 router = APIRouter()
@@ -17,7 +17,7 @@ router = APIRouter()
 @router.get(
     "/",
     summary="Get all available large language models",
-    response_description="Return HTTP Status Code 200 (OK)",
+    response_description="Return the available large language models",
     status_code=status.HTTP_200_OK,
     response_model=AvailableOptions,
 )
@@ -36,7 +36,7 @@ async def get_models():
     summary="Get the OpenAI model node",
     response_description="Return the OpenAI model node",
     status_code=status.HTTP_200_OK,
-    response_model=NodeContract,
+    response_model=Node,
 )
 async def get_openai():
     node = Node(
@@ -44,7 +44,7 @@ async def get_openai():
         name="OpenAI LLM",
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
-            TextDisplay(text="Input"),
+            TextDisplay(label="Input"),
             TextItem(
                 label="API Key",
                 placeholder="sk-...",
@@ -68,7 +68,7 @@ async def get_openai():
                 hasHandle=True,
                 handleStyle={"top": 174},
             ),
-            TextDisplay(text="Output"),
+            TextDisplay(label="Output"),
             HandleElement(
                 label="OpenAI",
                 position="right",
@@ -78,7 +78,7 @@ async def get_openai():
         ],
     )
 
-    return node.json()
+    return node
 
 
 @router.get(
@@ -86,7 +86,7 @@ async def get_openai():
     summary="Get the Gemini model node",
     response_description="Return the Gemini model node",
     status_code=status.HTTP_200_OK,
-    response_model=NodeContract,
+    response_model=Node,
 )
 async def get_gemini():
     node = Node(
@@ -94,7 +94,7 @@ async def get_gemini():
         name="Gemini LLM",
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
-            TextDisplay(text="Input"),
+            TextDisplay(label="Input"),
             TextItem(
                 label="API Key",
                 placeholder="sk-...",
@@ -108,7 +108,7 @@ async def get_gemini():
                 hasHandle=True,
                 handleStyle={"top": 134},
             ),
-            TextDisplay(text="Output"),
+            TextDisplay(label="Output"),
             HandleElement(
                 label="Gemini",
                 position="right",
@@ -118,7 +118,7 @@ async def get_gemini():
         ],
     )
 
-    return node.json()
+    return node
 
 
 @router.get(
@@ -126,7 +126,7 @@ async def get_gemini():
     summary="Get the Ollama model node",
     response_description="Return the Ollama model node",
     status_code=status.HTTP_200_OK,
-    response_model=NodeContract,
+    response_model=Node,
 )
 async def get_ollama():
     node = Node(
@@ -134,7 +134,7 @@ async def get_ollama():
         name="Ollama LLM",
         items=[
             HandleElement(label="Cache", position="left", style={"top": 51}),
-            TextDisplay(text="Input"),
+            TextDisplay(label="Input"),
             TextItem(
                 label="Base URL",
                 placeholder="http://localhost:1234",
@@ -157,7 +157,7 @@ async def get_ollama():
                 hasHandle=True,
                 handleStyle={"top": 174},
             ),
-            TextDisplay(text="Output"),
+            TextDisplay(label="Output"),
             HandleElement(
                 label="Ollama",
                 position="right",
@@ -167,4 +167,4 @@ async def get_ollama():
         ],
     )
 
-    return node.json()
+    return node

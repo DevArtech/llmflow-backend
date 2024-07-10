@@ -7,7 +7,7 @@ from ..modules.modules import (
     TextItem,
     CheckboxItem,
     TextAreaItem,
-    NodeContract,
+    Node,
 )
 
 router = APIRouter()
@@ -16,7 +16,7 @@ router = APIRouter()
 @router.get(
     "/",
     summary="Get all available helper functions.",
-    response_description="Return HTTP Status Code 200 (OK)",
+    response_description="Return the available helper functions.",
     status_code=status.HTTP_200_OK,
     response_model=AvailableOptions,
 )
@@ -34,14 +34,14 @@ async def get_helpers():
     summary="Get a system prompt node.",
     response_description="Return the system prompt node.",
     status_code=status.HTTP_200_OK,
-    response_model=NodeContract,
+    response_model=Node,
 )
 async def get_system_prompt_node():
     node = Node(
         icon="Terminal",
         name="System Prompt",
         items=[
-            TextDisplay(text="Input"),
+            TextDisplay(label="Input"),
             TextAreaItem(
                 label="Prompt",
                 placeholder="You are a helpful agent.",
@@ -49,7 +49,7 @@ async def get_system_prompt_node():
                 hasHandle=True,
                 handleStyle={"top": 81},
             ),
-            TextDisplay(text="Output"),
+            TextDisplay(label="Output"),
             HandleElement(
                 label="Prompt",
                 position="right",
@@ -58,4 +58,4 @@ async def get_system_prompt_node():
             ),
         ],
     )
-    return node.json()
+    return node

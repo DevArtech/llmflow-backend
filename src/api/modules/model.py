@@ -4,7 +4,6 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
 from ..models.openai import OpenAILLM
 from langchain_core.messages import SystemMessage
-from ..modules.modules import ListNode
 
 
 class Model(BaseModel):
@@ -154,7 +153,7 @@ class Model(BaseModel):
     def get_function(self, node: Dict[str, Any]):
         if node["Name"] == "System Prompt":
 
-            def function(data, *args):                   
+            def function(data, *args):
                 return [SystemMessage(content=args[0]["Value"]), data]
 
         elif node["Name"] == "OpenAI LLM":
