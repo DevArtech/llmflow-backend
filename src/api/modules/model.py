@@ -10,7 +10,7 @@ class Model(BaseModel):
     io: Any
     ELEMENTS_PER_ROW: int = 4
     stored_json: Optional[Dict[str, Any]] = None
-    model_store: List = []
+    architecture: List = []
 
     def store_json(self, json_data: Dict[str, Any]):
         self.stored_json = json_data
@@ -22,11 +22,11 @@ class Model(BaseModel):
         return self.stored_json == json_data
 
     def set_model(self, model: List):
-        self.model_store = model
-        self.model_store.sort(key=lambda x: x.idx)
+        self.architecture = model
+        self.architecture.sort(key=lambda x: x.idx)
 
     def get_model(self):
-        return self.model_store
+        return self.architecture
 
     def render_elements(
         self,
@@ -95,7 +95,7 @@ class Model(BaseModel):
 
     def execute_model(self, *args):
         data = args
-        for node in self.model_store:
+        for node in self.architecture:
             for override in node.overrides:
                 ovrd_key = list(override.keys())[0]
                 ovrd_value = int(override[ovrd_key])
@@ -127,7 +127,7 @@ class Model(BaseModel):
         return data
 
     def execute_chat(self, *args):
-        if not self.model_store:
+        if not self.architecture:
             return "Chat interface is not connected to any output. Please loop the chat interface to reconnect to itself via other nodes or itself."
 
         response = self.execute_model(args)

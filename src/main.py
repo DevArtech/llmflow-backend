@@ -1,11 +1,15 @@
 import gradio as gr
 from typing import List
+from fastapi import FastAPI, status, Response, APIRouter, Request, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
+
 from version import __version__
 from api.modules.modules import *
 from api.modules.model import Model
-from fastapi import FastAPI, status, Response
 from api.api import router as api_router
-from fastapi.middleware.cors import CORSMiddleware
+from middleware.logging_middleware import logger, LoggingMiddleware
 
 CSS = """
 #chat_texbox { flex-grow: 5; }
@@ -18,6 +22,8 @@ All you need to do is drag and drop the components you need and connect them tog
 Results are displayed in real-time and you can even chat with your model using the live rendering.
 """
 
+API = "/api/v1"
+
 app = FastAPI(title="LLMFLow", description=DESC, version=__version__)
 model = Model(io=gr.Blocks(css=CSS))
 
@@ -29,6 +35,17 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+app.add_middleware(LoggingMiddleware)
+
+router = APIRouter()
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Error: {exc}")
+    return JSONResponse(
+        status_code=HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"message": "An unexpected error occurred.", "detail": str(exc)},
+    )
 
 @app.get(
     "/",
@@ -44,14 +61,15 @@ def get_health() -> HealthCheck:
     to ensure a robust container orchestration and management is in place. Other
     services which rely on proper functioning of the API service will not deploy if this
     endpoint returns any other HTTP status code except 200 (OK).
+
     Returns:
-        HealthCheck: Returns a JSON response with the health status
+    - HealthCheck: Returns a JSON response with the health status
     """
     return HealthCheck(status="OK")
 
 
-@app.get(
-    "/api/v1/integrations",
+@router.get(
+    "/integrations",
     summary="Get all available integrations",
     response_description="Return a list of all available integrations",
     response_model=AvailableIntegrations,
@@ -60,16 +78,17 @@ def get_integrations() -> AvailableIntegrations:
     """
     ## Get all available integrations
     Endpoint to get all available integrations that can be used in the LLMFlow.
+
     Returns:
-        AvailableIntegrations: Returns a JSON response with all available integrations
+    - AvailableIntegrations: Returns a JSON response with all available integrations
     """
     return AvailableIntegrations(
         integrations=["Inputs", "Chat", "LLMs", "Helpers", "Outputs"]
     )
 
 
-@app.post(
-    "/api/v1/update-architecture",
+@router.post(
+    "/update-architecture",
     summary="Update the current Gradio architecture",
     response_description="Success on if the JSON is valid for the architecture",
     response_model=None,
@@ -78,8 +97,9 @@ def update_architecture(architecture: ArchitectureContract) -> None:
     """
     ## Update the current Gradio architecture
     Endpoint to update the current Gradio architecture with the JSON provided.
+
     Returns:
-        Dict: Returns a JSON response with the success status
+    - Dict: Returns a JSON response with the success status
     """
 
     request_model = architecture.model
@@ -293,6 +313,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
 
         model.set_model(model_schema)
         model.store_json(request_model)
+        logger.info(f"Set model: {json.dumps(request_model)}")
 
         # except Exception as e:
         #     raise HTTPException(
@@ -312,4 +333,5 @@ def update_architecture(architecture: ArchitectureContract) -> None:
 model.render_elements()
 
 app = gr.mount_gradio_app(app, model.io, path="/gradio")
-app.include_router(api_router, prefix="/api/v1")
+app.include_router(router, prefix=API)
+app.include_router(api_router, prefix=API)
