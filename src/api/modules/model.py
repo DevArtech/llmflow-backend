@@ -1,16 +1,18 @@
-import inspect
+import time
 import gradio as gr
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
 from ..models.openai import OpenAILLM
+from ..modules.modules import ListNode
 from langchain_core.messages import SystemMessage
+from middleware.logging_middleware import logger
 
 
 class Model(BaseModel):
     io: Any
     ELEMENTS_PER_ROW: int = 4
     stored_json: Optional[Dict[str, Any]] = None
-    architecture: List = []
+    architecture: List[ListNode] = []
 
     def store_json(self, json_data: Dict[str, Any]):
         self.stored_json = json_data
@@ -103,12 +105,18 @@ class Model(BaseModel):
                     if "Type" in dictionary and dictionary["Type"] == ovrd_key:
                         if isinstance(args[0], tuple):
                             dictionary["Value"] = args[0][ovrd_value + 2]
+                            logger.info(f"Model | Set {ovrd_key} on node {node.name} to {args[0][ovrd_value + 2]}")
                         else:
                             dictionary["Value"] = args[ovrd_value]
+                            logger.info(f"Model | Set {ovrd_key} on node {node.name} to {args[ovrd_value]}")
 
             final_result = []
             for idx, func in enumerate(node.func):
                 temp_data = None
+                logger.info(f"Model | Executing {func.__name__} on node {node.name}")
+                logger.info(f"Model | Input data: {data}")
+                logger.info(f"Model | Input args: {node.args}")
+                start_time = time.time()
                 if isinstance(data, list) or isinstance(data, tuple):
                     try:
                         temp_data = func(data[idx], *node.args)
@@ -116,10 +124,13 @@ class Model(BaseModel):
                         temp_data = func(data[0], *node.args)
                 else:
                     temp_data = func(data, *node.args)
+                logger.info(f"Model | Finished execution of {func.__name__} on node {node.name} - {time.time() - start_time}s")
+                logger.info(f"Model | Function result: {temp_data}")
 
                 final_result.append(temp_data)
 
             data = final_result
+            logger.info(f"Model | Node result: {data}")
 
         if len(data) == 1:
             return data[0]

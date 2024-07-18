@@ -264,6 +264,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
                 model_schema.append(
                     ListNode(
                         idx=target_node["Id"],
+                        name=request_model["Nodes"][int(edge["Target"]) - 1]["Name"],
                         sources=[int(source_node["Id"])],
                         func=[func],
                         args=target_node["Items"],
@@ -296,6 +297,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
                 model_schema.append(
                     ListNode(
                         idx=target_node["Id"],
+                        name=request_model["Nodes"][int(edge["Target"]) - 1]["Name"],
                         sources=[int(source_node["Id"])],
                         func=[func],
                         args=target_node["Items"],
