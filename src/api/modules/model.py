@@ -3,7 +3,7 @@ import gradio as gr
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
 from ..models.openai import OpenAILLM
-from ..modules.modules import ListNode
+from ..modules.modules import ModelNode
 from langchain_core.messages import SystemMessage
 from middleware.logging_middleware import logger
 
@@ -12,7 +12,7 @@ class Model(BaseModel):
     io: Any
     ELEMENTS_PER_ROW: int = 4
     stored_json: Optional[Dict[str, Any]] = None
-    architecture: List[ListNode] = []
+    model: List[ModelNode] = []
 
     def store_json(self, json_data: Dict[str, Any]):
         self.stored_json = json_data
@@ -24,11 +24,11 @@ class Model(BaseModel):
         return self.stored_json == json_data
 
     def set_model(self, model: List):
-        self.architecture = model
-        self.architecture.sort(key=lambda x: x.idx)
+        self.model = model
+        self.model.sort(key=lambda x: x.idx)
 
     def get_model(self):
-        return self.architecture
+        return self.model
 
     def render_elements(
         self,
@@ -97,7 +97,7 @@ class Model(BaseModel):
 
     def execute_model(self, *args):
         data = args
-        for node in self.architecture:
+        for node in self.model:
             for override in node.overrides:
                 ovrd_key = list(override.keys())[0]
                 ovrd_value = int(override[ovrd_key])
@@ -105,10 +105,14 @@ class Model(BaseModel):
                     if "Type" in dictionary and dictionary["Type"] == ovrd_key:
                         if isinstance(args[0], tuple):
                             dictionary["Value"] = args[0][ovrd_value + 2]
-                            logger.info(f"Model | Set {ovrd_key} on node {node.name} to {args[0][ovrd_value + 2]}")
+                            logger.info(
+                                f"Model | Set {ovrd_key} on node {node.name} to {args[0][ovrd_value + 2]}"
+                            )
                         else:
                             dictionary["Value"] = args[ovrd_value]
-                            logger.info(f"Model | Set {ovrd_key} on node {node.name} to {args[ovrd_value]}")
+                            logger.info(
+                                f"Model | Set {ovrd_key} on node {node.name} to {args[ovrd_value]}"
+                            )
 
             final_result = []
             for idx, func in enumerate(node.func):
@@ -124,7 +128,9 @@ class Model(BaseModel):
                         temp_data = func(data[0], *node.args)
                 else:
                     temp_data = func(data, *node.args)
-                logger.info(f"Model | Finished execution of {func.__name__} on node {node.name} - {time.time() - start_time}s")
+                logger.info(
+                    f"Model | Finished execution of {func.__name__} on node {node.name} - {time.time() - start_time}s"
+                )
                 logger.info(f"Model | Function result: {temp_data}")
 
                 final_result.append(temp_data)
@@ -138,7 +144,7 @@ class Model(BaseModel):
         return data
 
     def execute_chat(self, *args):
-        if not self.architecture:
+        if not self.model:
             return "Chat interface is not connected to any output. Please loop the chat interface to reconnect to itself via other nodes or itself."
 
         response = self.execute_model(args)

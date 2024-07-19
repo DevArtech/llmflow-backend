@@ -4,17 +4,18 @@ from fastapi import Request
 from starlette.routing import Match
 from starlette.middleware.base import BaseHTTPMiddleware
 
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('appLogger')
+logging.config.fileConfig("logging.conf")
+logger = logging.getLogger("appLogger")
+
 
 class LoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         name = ""
         for route in request.app.routes:
-            if hasattr(route, 'endpoint'):
+            if hasattr(route, "endpoint"):
                 match, scope = route.matches(request.scope)
                 if match == Match.FULL:
-                    name = str(route.endpoint.__name__).replace('_', ' ').title()
+                    name = str(route.endpoint.__name__).replace("_", " ").title()
                     break  # Exit the loop once a match is found
 
         start_time = time.time()

@@ -176,7 +176,8 @@ class Node(BaseModel):
         ]
     ] = None
 
-class ListNode(BaseModel):
+
+class ModelNode(BaseModel):
     """A node in a list of nodes."""
 
     idx: int

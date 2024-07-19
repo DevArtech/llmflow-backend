@@ -39,6 +39,7 @@ app.add_middleware(LoggingMiddleware)
 
 router = APIRouter()
 
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Error: {exc}")
@@ -46,6 +47,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=HTTP_500_INTERNAL_SERVER_ERROR,
         content={"message": "An unexpected error occurred.", "detail": str(exc)},
     )
+
 
 @app.get(
     "/",
@@ -262,7 +264,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
                     break
             else:
                 model_schema.append(
-                    ListNode(
+                    ModelNode(
                         idx=target_node["Id"],
                         name=request_model["Nodes"][int(edge["Target"]) - 1]["Name"],
                         sources=[int(source_node["Id"])],
@@ -295,7 +297,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
                 func = model.get_function(target_node)
 
                 model_schema.append(
-                    ListNode(
+                    ModelNode(
                         idx=target_node["Id"],
                         name=request_model["Nodes"][int(edge["Target"]) - 1]["Name"],
                         sources=[int(source_node["Id"])],
@@ -315,7 +317,9 @@ def update_architecture(architecture: ArchitectureContract) -> None:
 
         model.set_model(model_schema)
         model.store_json(request_model)
-        logger.info(f"Set model: {json.dumps(request_model)}")
+        logger.info(
+            f"API | Update Architecture - Set model: {json.dumps(request_model)}"
+        )
 
         # except Exception as e:
         #     raise HTTPException(
