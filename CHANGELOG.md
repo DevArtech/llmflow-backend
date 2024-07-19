@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.3.2 (2024-07-19)
+
+### Documentation
+
+* docs: Update README.md ([`a3ca4a8`](https://github.com/DevArtech/llmflow-backend/commit/a3ca4a879d956ba08c01242a2f22ec0638b978e1))
+
+### Fix
+
+* fix: Readd exception handler ([`04cc96c`](https://github.com/DevArtech/llmflow-backend/commit/04cc96c1e87546f186e695017562ee8a2f8040ec))
+
 ## v0.3.1 (2024-07-19)
 
 ### Documentation
