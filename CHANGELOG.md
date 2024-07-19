@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## v0.3.3 (2024-07-19)
+
+### Chore
+
+* chore: Add release command to pipfile ([`7b959e2`](https://github.com/DevArtech/llmflow-backend/commit/7b959e23f293f38785e46666807fee81cfa1c15b))
+
+### Fix
+
+* fix: Fix release for windows ([`e9e1594`](https://github.com/DevArtech/llmflow-backend/commit/e9e159471a0b408a3baa477787a476168092eed0))
+
+* fix: Fix release command ([`9bd6f21`](https://github.com/DevArtech/llmflow-backend/commit/9bd6f211be2e69b40e07bdb2914d7533174255ce))
+
 ## v0.3.2 (2024-07-19)
 
 ### Documentation
