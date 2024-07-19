@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.3.1 (2024-07-19)
+
+### Performance
+
+* perf: Update dev packages and add enforced git messages ([`80bd79a`](https://github.com/DevArtech/llmflow-backend/commit/80bd79a624d0f6dfa407c4e6aa4382a2ef83a5a2))
+
 ## v0.3.0 (2024-07-19)
 
 ### Feature
