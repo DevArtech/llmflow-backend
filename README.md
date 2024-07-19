@@ -5,7 +5,7 @@ LLMFlow - A programming language for LLM Apps
 ## How to use Virtual Environment
 
 1. Install pipenv via `pip install pipenv` (Make sure you also set pipenv in your computer's environment variables)
-2. Install dependencies with `pipenv install`
+2. Install dependencies with `pipenv install -d`
 3. Start the virtual environment with `pipenv shell`
 
 ## How to run the API locally
@@ -15,6 +15,13 @@ LLMFlow - A programming language for LLM Apps
 2. Application should open on `http://localhost:8000`
 3. To access the API docs, go to `http://localhost:8000/docs` or `http://localhost:8000/redoc`
    > The docs are a way to see what endpoints are available, and make test calls to the given endpoints.
+
+## How to make commits
+
+This project uses `enforce-git-message`, which requires commit messages to follow a standard which `python-semantic-release` can understand (Refer to [How to get/update the project version](#how-to-getupdate-the-project-version)).
+
+Once a commit has been made using the Angular format, then run `semantic-release version` in the terminal. This will allow `python-semantic-release` to automatically update the [CHANGELOG.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md) and commit the changes.
+> Note: If the change does not immediately require a CHANGELOG update, you can push as normal without running the command
 
 ## How to get/update the project version
 
@@ -33,6 +40,6 @@ This project uses `python-semantic-release` which will automatically update the 
 
 An example of a commit message which would initate a version change is: `feat: added world domination`
 
-> All major, minor, and patch changes will be reflected in the [Changelog.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md)
+> All major, minor, and patch changes will be reflected in the [CHANGELOG.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md)
 
 You can check the current version by running `pipenv run version`
