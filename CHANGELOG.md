@@ -1,69 +1,121 @@
 # CHANGELOG
 
-## v0.0.0 (2024-07-07)
+## v0.3.0 (2024-07-19)
+
+### Feature
+
+* feat: Initial infrastructure ([`09d1127`](https://github.com/DevArtech/llmflow-backend/commit/09d1127e6714253ee0f6aa8f6c30badea08b10bc))
+
+* feat: release version 0.2.0 ([`caf7128`](https://github.com/DevArtech/llmflow-backend/commit/caf7128361a412d10f2a6184d48622f90cd76327))
+
+## v0.2.0 (2024-07-18)
+
+### Chore
+
+* chore: Refactor and reformat ([`d529bbf`](https://github.com/DevArtech/llmflow-backend/commit/d529bbfd8698b4d81fb03c502545999b4245d31c))
+
+* chore: add versioning to FastAPI ([`b3a22bf`](https://github.com/DevArtech/llmflow-backend/commit/b3a22bf80dd613619bdb3315ad19549c7e06eff0))
+
+### Documentation
+
+* docs: update README.md for version changes ([`68562c7`](https://github.com/DevArtech/llmflow-backend/commit/68562c73baae7b921101b79f266f93ef5950758c))
+
+### Feature
+
+* feat: Add Logging ([`eaa3bcb`](https://github.com/DevArtech/llmflow-backend/commit/eaa3bcb7e850b5c4c15d285e74926c7cf54a5935))
+
+* feat: add version script to pipfile ([`282186b`](https://github.com/DevArtech/llmflow-backend/commit/282186bf855f4fbff3a0cb17d3a0229388f5a565))
+
+### Fix
+
+* fix: Remove repo_dir ([`785484a`](https://github.com/DevArtech/llmflow-backend/commit/785484a6e4638ba66d16f28e9d7875613d1e9dc4))
+
+* fix: pyproject.toml encoding ([`5983633`](https://github.com/DevArtech/llmflow-backend/commit/598363360fedc60fc87ab2f6f1017ac4d263b179))
 
 ### Unknown
 
-- Refined parameter management ([`33ed55f`](https://github.com/DevArtech/llmflow-backend/commit/33ed55f8283546c7508d48db8635425d99b7e196))
+* Add model-based logging ([`df00629`](https://github.com/DevArtech/llmflow-backend/commit/df00629c96d8caad0300f0f225507f086148cba1))
 
-- Need better way to do overriding params ([`52345a4`](https://github.com/DevArtech/llmflow-backend/commit/52345a4b6a79e66e30cb18f5e044bb0acd02dc31))
+* Add GPT-4o Mini ([`839d983`](https://github.com/DevArtech/llmflow-backend/commit/839d983ccc3a65c4f2724b1c83f4f730e210b75a))
 
-- Remove typing ([`82350a0`](https://github.com/DevArtech/llmflow-backend/commit/82350a0f34de4710b716833a864189d162166ac0))
+* Add logging ([`f071812`](https://github.com/DevArtech/llmflow-backend/commit/f071812f55f31e45fc5af21e2a420d5d2d77a8fc))
 
-- Fix naming ([`42cf582`](https://github.com/DevArtech/llmflow-backend/commit/42cf582c7f4d1cc46e07e14426c9eee2284bb1ae))
+* Update model returns for pydantic standard ([`70cba45`](https://github.com/DevArtech/llmflow-backend/commit/70cba456a5a76e2051517b9b90d81b8bba06d852))
 
-- Code cleanup &amp; tooltips ([`4ac28c4`](https://github.com/DevArtech/llmflow-backend/commit/4ac28c4bd93a6c075a45d8bc8ba7a15ad8a82509))
+* Merge branch &#39;main&#39; of https://github.com/DevArtech/llmflow-backend ([`5457f57`](https://github.com/DevArtech/llmflow-backend/commit/5457f5771dc9e156c0c134eb8ac9f5331b0ede0d))
 
-- API &amp; Code Cleanup ([`fbac53e`](https://github.com/DevArtech/llmflow-backend/commit/fbac53ebffd76bee8ebd0f4885183eb5dbf3b129))
+* Fix typo ([`a6d6541`](https://github.com/DevArtech/llmflow-backend/commit/a6d6541bb6b4088ee91e2b516b3e0f21e52762af))
 
-- Move render_elements to model ([`04d44b6`](https://github.com/DevArtech/llmflow-backend/commit/04d44b692caafd53138c69984537fc93ca10b211))
+## v0.1.0 (2024-07-07)
 
-- Allow for parameters of nodes to be user set ([`50e234d`](https://github.com/DevArtech/llmflow-backend/commit/50e234dc3ceb1ece2625210ce585a3fd50d6910a))
+### Feature
 
-- Update to use LangChain and add OpenAILLM class ([`815930c`](https://github.com/DevArtech/llmflow-backend/commit/815930c8b4807460942341e3c70be26659fe9a9f))
+* feat: add semantic versioning ([`4f63572`](https://github.com/DevArtech/llmflow-backend/commit/4f63572aebf941facb645c4c33bbca5db481b36b))
 
-- Add requires and styling/bugfixes ([`aa2bc0a`](https://github.com/DevArtech/llmflow-backend/commit/aa2bc0a481171e191e33c257f9be8077ff436362))
+* feat: Add semantic versioning ([`69c2a0f`](https://github.com/DevArtech/llmflow-backend/commit/69c2a0f7d4e968d7f1a48888584e0c32fdb08963))
 
-- Updates and bugfixes ([`a36e9ff`](https://github.com/DevArtech/llmflow-backend/commit/a36e9ff1f26fd8a2c70a9c0801e7760bb69665f5))
+### Unknown
 
-- Delete pipfile.lock ([`9d23158`](https://github.com/DevArtech/llmflow-backend/commit/9d231586f3851c4c6d0a0e4474afccd4247c2b50))
+* Refined parameter management ([`33ed55f`](https://github.com/DevArtech/llmflow-backend/commit/33ed55f8283546c7508d48db8635425d99b7e196))
 
-- Remoe exact dependency ([`64c166b`](https://github.com/DevArtech/llmflow-backend/commit/64c166be986a688a322ef1cdb819ae0f423df98e))
+* Need better way to do overriding params ([`52345a4`](https://github.com/DevArtech/llmflow-backend/commit/52345a4b6a79e66e30cb18f5e044bb0acd02dc31))
 
-- Fix node names ([`197e85d`](https://github.com/DevArtech/llmflow-backend/commit/197e85d7ed3aeac93796acab261bc0c87d5b7bd9))
+* Remove typing ([`82350a0`](https://github.com/DevArtech/llmflow-backend/commit/82350a0f34de4710b716833a864189d162166ac0))
 
-- Add multimodal ([`9ab4fe4`](https://github.com/DevArtech/llmflow-backend/commit/9ab4fe4c7bd468ed6cdcdaaeab69cccc4ed51b18))
+* Fix naming ([`42cf582`](https://github.com/DevArtech/llmflow-backend/commit/42cf582c7f4d1cc46e07e14426c9eee2284bb1ae))
 
-- Update Gradio and add OpenAI for testing ([`2f40aa8`](https://github.com/DevArtech/llmflow-backend/commit/2f40aa85485d8b268d18c42e2320ff3ece589736))
+* Code cleanup &amp; tooltips ([`4ac28c4`](https://github.com/DevArtech/llmflow-backend/commit/4ac28c4bd93a6c075a45d8bc8ba7a15ad8a82509))
 
-- Fix execute chat ([`6d8d2f7`](https://github.com/DevArtech/llmflow-backend/commit/6d8d2f76293b1763c731e4b3b694948596a122d4))
+* API &amp; Code Cleanup ([`fbac53e`](https://github.com/DevArtech/llmflow-backend/commit/fbac53ebffd76bee8ebd0f4885183eb5dbf3b129))
 
-- Minor fix ([`82e4f24`](https://github.com/DevArtech/llmflow-backend/commit/82e4f24f55b799f70d3c24a126a4c77aed4cecf3))
+* Move render_elements to model ([`04d44b6`](https://github.com/DevArtech/llmflow-backend/commit/04d44b692caafd53138c69984537fc93ca10b211))
 
-- Add chat input ([`1d872f6`](https://github.com/DevArtech/llmflow-backend/commit/1d872f626cda18cb5d9bca695f3d9a395e45d067))
+* Allow for parameters of nodes to be user set ([`50e234d`](https://github.com/DevArtech/llmflow-backend/commit/50e234dc3ceb1ece2625210ce585a3fd50d6910a))
 
-- Update Gradio render (WIP) ([`8281a10`](https://github.com/DevArtech/llmflow-backend/commit/8281a10e34980b571956a3f241634894ebe8cc38))
+* Update to use LangChain and add OpenAILLM class ([`815930c`](https://github.com/DevArtech/llmflow-backend/commit/815930c8b4807460942341e3c70be26659fe9a9f))
 
-- Update integration endpoints ([`61ae29a`](https://github.com/DevArtech/llmflow-backend/commit/61ae29a0589754c8cf2dc2ed788bcca7acb451ca))
+* Add requires and styling/bugfixes ([`aa2bc0a`](https://github.com/DevArtech/llmflow-backend/commit/aa2bc0a481171e191e33c257f9be8077ff436362))
 
-- Update to add gradio rendering endpoint ([`d2c180e`](https://github.com/DevArtech/llmflow-backend/commit/d2c180ee193cebae7ce385d9af07a10499cfd76a))
+* Updates and bugfixes ([`a36e9ff`](https://github.com/DevArtech/llmflow-backend/commit/a36e9ff1f26fd8a2c70a9c0801e7760bb69665f5))
 
-- New API Updates ([`cbacb25`](https://github.com/DevArtech/llmflow-backend/commit/cbacb254ea081a81306bef14476215478bf4af07))
+* Delete pipfile.lock ([`9d23158`](https://github.com/DevArtech/llmflow-backend/commit/9d231586f3851c4c6d0a0e4474afccd4247c2b50))
 
-- Merge pull request #3 from DevArtech/2-improved-nodes
+* Remoe exact dependency ([`64c166b`](https://github.com/DevArtech/llmflow-backend/commit/64c166be986a688a322ef1cdb819ae0f423df98e))
+
+* Fix node names ([`197e85d`](https://github.com/DevArtech/llmflow-backend/commit/197e85d7ed3aeac93796acab261bc0c87d5b7bd9))
+
+* Add multimodal ([`9ab4fe4`](https://github.com/DevArtech/llmflow-backend/commit/9ab4fe4c7bd468ed6cdcdaaeab69cccc4ed51b18))
+
+* Update Gradio and add OpenAI for testing ([`2f40aa8`](https://github.com/DevArtech/llmflow-backend/commit/2f40aa85485d8b268d18c42e2320ff3ece589736))
+
+* Fix execute chat ([`6d8d2f7`](https://github.com/DevArtech/llmflow-backend/commit/6d8d2f76293b1763c731e4b3b694948596a122d4))
+
+* Minor fix ([`82e4f24`](https://github.com/DevArtech/llmflow-backend/commit/82e4f24f55b799f70d3c24a126a4c77aed4cecf3))
+
+* Add chat input ([`1d872f6`](https://github.com/DevArtech/llmflow-backend/commit/1d872f626cda18cb5d9bca695f3d9a395e45d067))
+
+* Update Gradio render (WIP) ([`8281a10`](https://github.com/DevArtech/llmflow-backend/commit/8281a10e34980b571956a3f241634894ebe8cc38))
+
+* Update integration endpoints ([`61ae29a`](https://github.com/DevArtech/llmflow-backend/commit/61ae29a0589754c8cf2dc2ed788bcca7acb451ca))
+
+* Update to add gradio rendering endpoint ([`d2c180e`](https://github.com/DevArtech/llmflow-backend/commit/d2c180ee193cebae7ce385d9af07a10499cfd76a))
+
+* New API Updates ([`cbacb25`](https://github.com/DevArtech/llmflow-backend/commit/cbacb254ea081a81306bef14476215478bf4af07))
+
+* Merge pull request #3 from DevArtech/2-improved-nodes
 
 Improve Nodes for Frontend ([`e4ec4b8`](https://github.com/DevArtech/llmflow-backend/commit/e4ec4b8b00b1d06806d1129e8ad857502ba21fdc))
 
-- Merge branch &#39;main&#39; of https://github.com/DevArtech/llmflow-backend into 2-improved-nodes ([`615a6df`](https://github.com/DevArtech/llmflow-backend/commit/615a6dfe8bcc881437dffe200243f95eb8f28a6f))
+* Merge branch &#39;main&#39; of https://github.com/DevArtech/llmflow-backend into 2-improved-nodes ([`615a6df`](https://github.com/DevArtech/llmflow-backend/commit/615a6dfe8bcc881437dffe200243f95eb8f28a6f))
 
-- Merge pull request #2 from DevArtech/1-backend-boilerplate-api
+* Merge pull request #2 from DevArtech/1-backend-boilerplate-api
 
 Initial commit ([`a14e586`](https://github.com/DevArtech/llmflow-backend/commit/a14e58602d68e086dde1c57e028438990c25bb7b))
 
-- Initial commit ([`6e1b7ed`](https://github.com/DevArtech/llmflow-backend/commit/6e1b7edc91d240f51363ef0a3203ab259ea95fab))
+* Initial commit ([`6e1b7ed`](https://github.com/DevArtech/llmflow-backend/commit/6e1b7edc91d240f51363ef0a3203ab259ea95fab))
 
-- Update README ([`320217f`](https://github.com/DevArtech/llmflow-backend/commit/320217f4247266faf5db31af79a7c84b7b63b163))
+* Update README ([`320217f`](https://github.com/DevArtech/llmflow-backend/commit/320217f4247266faf5db31af79a7c84b7b63b163))
 
-- Update with improved nodes ([`d48615d`](https://github.com/DevArtech/llmflow-backend/commit/d48615d3ae28390e5b77c5aae9cd48a914d64e56))
+* Update with improved nodes ([`d48615d`](https://github.com/DevArtech/llmflow-backend/commit/d48615d3ae28390e5b77c5aae9cd48a914d64e56))
 
-- Initial commit ([`ea69e15`](https://github.com/DevArtech/llmflow-backend/commit/ea69e15bd176184d454b8b3fe2ddb3d90d2d03d5))
+* Initial commit ([`ea69e15`](https://github.com/DevArtech/llmflow-backend/commit/ea69e15bd176184d454b8b3fe2ddb3d90d2d03d5))
