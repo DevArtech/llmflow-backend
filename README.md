@@ -25,6 +25,8 @@ Once a commit has been made using the Angular format, then run `pipenv run relea
 
 ## How to get/update the project version
 
+Before using, make sure you have a [Github personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) set in your environment variables on your device.
+
 This project uses `python-semantic-release` which will automatically update the [Changelog.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md) and the version of the project when commits are titled to match the Angular format. The following are the standard types:
 
 - `feat`: New feature (+0.1.0)
