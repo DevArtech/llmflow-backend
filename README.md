@@ -20,7 +20,7 @@ LLMFlow - A programming language for LLM Apps
 
 This project uses `enforce-git-message`, which requires commit messages to follow a standard which `python-semantic-release` can understand (Refer to [How to get/update the project version](#how-to-getupdate-the-project-version)).
 
-Once a commit has been made using the Angular format, then run `semantic-release version` in the terminal. This will allow `python-semantic-release` to automatically update the [CHANGELOG.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md) and commit the changes.
+Once a commit has been made using the Angular format, then run `pipenv run release` in the terminal. This will allow `python-semantic-release` to automatically update the [CHANGELOG.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md) and commit the changes, then automatically fetch the pushed changes.
 > Note: If the change does not immediately require a CHANGELOG update, you can push as normal without running the command
 
 ## How to get/update the project version
