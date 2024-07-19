@@ -12,10 +12,11 @@ gradio = "*"
 openai = "*"
 langchain = "*"
 langchain-openai = "*"
-black = "*"
-python-semantic-release="*"
 
 [dev-packages]
+black = "*"
+python-semantic-release="*"
+enforce-git-message="*"
 
 [requires]
 python_version = "3.11"
