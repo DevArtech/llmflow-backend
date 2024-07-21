@@ -21,6 +21,7 @@ LLMFlow - A programming language for LLM Apps
 This project uses `enforce-git-message`, which requires commit messages to follow a standard which `python-semantic-release` can understand (Refer to [How to get/update the project version](#how-to-getupdate-the-project-version)).
 
 Once a commit has been made using the Angular format, then run `pipenv run release` in the terminal. This will allow `python-semantic-release` to automatically update the [CHANGELOG.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md) and commit the changes, then automatically fetch the pushed changes.
+
 > Note: If the change does not immediately require a CHANGELOG update, you can push as normal without running the command
 
 ## How to get/update the project version
@@ -45,3 +46,40 @@ An example of a commit message which would initate a version change is: `feat: a
 > All major, minor, and patch changes will be reflected in the [CHANGELOG.md](https://github.com/DevArtech/llmflow-backend/blob/main/CHANGELOG.md)
 
 You can check the current version by running `pipenv run version`
+
+## How to deploy to AWS
+
+First, ensure you have [AWSCLI](https://aws.amazon.com/cli/), [Make](https://www.gnu.org/software/make/), [Docker](https://www.docker.com/), and [Git Bash](https://git-scm.com/downloads) installed. Make sure you configure your AWS CLI by running `aws configure` in a terminal and following the configuration setup.
+
+**IMPORTANT (IF ON WINDOWS), AFTER INSTALLING GITBASH, ADD THE FOLLOWING DIRECTORY TO YOUR PATH ENVIRONMENT VARIABLES:** `C:\Program Files\Git\bin`
+
+1. Ensure you have the following environment variables set in your `.env` file in your project root directory
+
+```
+AWS_ACCOUNT_ID=<your aws account id>
+AWS_REGION=<aws region>
+```
+
+2. Execute the following commands in order, ensure each succeeds
+
+```
+make setup-ecr
+```
+
+```
+make deploy-container
+```
+
+> If this command hangs while attempting to login, fill in and execute `aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com` in a terminal and verify it succeeds.
+
+```
+make deploy-service
+```
+
+These commands will setup, and deploy an EC2 Fargate instance to AWS where you can then utilize the API! If you wish to teardown the EC2 instance, run the following command
+
+```
+make destroy-service
+```
+
+> It is suggested to teardown the service after you are finished with it, as it will incur charges will live.
