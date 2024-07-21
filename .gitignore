@@ -1,2 +1,5 @@
 pipfile.lock
 .env
+.terraform
+.terraform.*
+terraform.*
