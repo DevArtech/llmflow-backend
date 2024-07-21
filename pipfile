@@ -22,6 +22,7 @@ enforce-git-message="*"
 python_version = "3.11"
 
 [scripts]
+shell = "bash -c"
 start = "uvicorn --app-dir src main:app --reload"
 format = "python -m black src"
 version = "semantic-release --noop version --print"
