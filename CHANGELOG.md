@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.3.5 (2024-07-20)
+
+### Fix
+
+* fix: Fix dockerfile ([`0dcb65e`](https://github.com/DevArtech/llmflow-backend/commit/0dcb65e2668721a9f9d49b4a69cd3d397abef4be))
+
 ## v0.3.4 (2024-07-20)
 
 ### Documentation
