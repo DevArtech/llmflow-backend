@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/",
+    "",
     summary="Get all available helper functions.",
     response_description="Return the available helper functions.",
     status_code=status.HTTP_200_OK,

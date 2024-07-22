@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/",
+    "",
     summary="Get all available chat options",
     response_description="Return the available chat options",
     status_code=status.HTTP_200_OK,

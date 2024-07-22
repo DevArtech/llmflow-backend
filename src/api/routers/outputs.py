@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/",
+    "",
     summary="Get all available output options",
     response_description="Return the available output options",
     status_code=status.HTTP_200_OK,

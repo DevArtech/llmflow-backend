@@ -15,7 +15,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/",
+    "",
     summary="Get all available large language models",
     response_description="Return the available large language models",
     status_code=status.HTTP_200_OK,
