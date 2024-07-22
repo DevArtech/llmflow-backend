@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.3.7 (2024-07-21)
+
+### Fix
+
+* fix: Update logging for local &amp; aws deployment ([`2fd9978`](https://github.com/DevArtech/llmflow-backend/commit/2fd997816456b0b664ee99132d664736b6582373))
+
 ## v0.3.6 (2024-07-21)
 
 ### Fix
