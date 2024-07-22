@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.4.0 (2024-07-21)
+
+### Feature
+
+* feat: Add Ollama integration ([`d9db786`](https://github.com/DevArtech/llmflow-backend/commit/d9db786d860aacfd69771fd9d7b36884b79e0883))
+
 ## v0.3.7 (2024-07-21)
 
 ### Fix
