@@ -143,10 +143,10 @@ async def get_ollama():
             TextDisplay(label="Input"),
             TextItem(
                 label="Base URL",
-                placeholder="http://localhost:1234",
+                placeholder="http://localhost:11434",
                 type="url",
                 hasHandle=True,
-                handleStyle={"top": 104},
+                handleStyle={"top": 104}
             ),
             DropdownItem(
                 label="Model",
@@ -162,6 +162,11 @@ async def get_ollama():
                 initial=0.7,
                 hasHandle=True,
                 handleStyle={"top": 174},
+            ),
+            TextAreaItem(
+                label="System Prompt",
+                hasHandle=True,
+                handleStyle={"top": 210},
             ),
             TextDisplay(label="Output"),
             HandleElement(

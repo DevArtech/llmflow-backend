@@ -12,6 +12,7 @@ gradio = "*"
 openai = "*"
 langchain = "*"
 langchain-openai = "*"
+langchain_community = "*"
 
 [dev-packages]
 black = "*"

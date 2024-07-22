@@ -219,10 +219,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
                     elements[node["Id"]] = input_obj
 
                 if "LLM" in node["Name"]:
-                    llm_obj = None
-                    if node["Name"] == "OpenAI LLM":
-                        llm_obj = gr.Textbox(visible=False, elem_id=node["Id"])
-
+                    llm_obj = gr.Textbox(visible=False, elem_id=node["Id"])
                     elements[node["Id"]] = llm_obj
 
                 elif "Output" in node["Name"]:
