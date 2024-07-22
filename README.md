@@ -62,7 +62,7 @@ First, ensure you have [AWSCLI](https://aws.amazon.com/cli/), [Make](https://www
 
 **IMPORTANT (IF ON WINDOWS), AFTER INSTALLING GITBASH, ADD THE FOLLOWING DIRECTORY TO YOUR PATH ENVIRONMENT VARIABLES:** `C:\Program Files\Git\bin`
 
-1. Ensure you have the following environment variables set in your `.env` file in your project root directory
+1. Ensure you have the following environment variables set in your `.local.env` file in your project root directory
 
 ```
 AWS_ACCOUNT_ID=<your aws account id>
