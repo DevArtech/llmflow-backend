@@ -30,4 +30,7 @@ class OllamaLLM(BaseModel):
         if isinstance(data, list) or isinstance(data, tuple):
             data = data[0]
         return self.model.invoke(data)
+    
+    class Config:
+        protected_namespaces = ()
         

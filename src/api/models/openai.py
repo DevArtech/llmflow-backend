@@ -65,3 +65,6 @@ class OpenAILLM(BaseModel):
         # Add the prompt to the cache and invoke the model
         conversation = self.cache + [HumanMessage(content=prompt.strip())]
         return self.model.invoke(conversation)
+    
+    class Config:
+        protected_namespaces = ()
