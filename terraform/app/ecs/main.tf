@@ -121,6 +121,12 @@ resource "aws_ecs_task_definition" "api" {
       name    = "${var.app_name}-api-container"
       image   = "${var.image}"
       command = ["uvicorn", "--app-dir", "src", "main:app", "--host", "0.0.0.0", "--port", "80"]
+      environment = [
+        {
+          name  = "LOGS"
+          value = "console"
+        },
+      ]
       portMappings = [
         {
           hostPort      = 80

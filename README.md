@@ -16,6 +16,15 @@ LLMFlow - A programming language for LLM Apps
 3. To access the API docs, go to `http://localhost:8000/docs` or `http://localhost:8000/redoc`
    > The docs are a way to see what endpoints are available, and make test calls to the given endpoints.
 
+## How to log to a file
+
+You can log with one of two options
+
+- 'console' (default): Logs to the console of the application
+- 'file': Writes logs to the `/logs` directory
+
+This setting can be changed in the `.env` file.
+
 ## How to make commits
 
 This project uses `enforce-git-message`, which requires commit messages to follow a standard which `python-semantic-release` can understand (Refer to [How to get/update the project version](#how-to-getupdate-the-project-version)).

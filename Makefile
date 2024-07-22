@@ -1,4 +1,4 @@
-include .env 
+include .local.env 
 
 .EXPORT_ALL_VARIABLES:
 APP_NAME=llmflow

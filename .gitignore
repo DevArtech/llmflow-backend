@@ -1,5 +1,5 @@
 Pipfile.lock
-.env
+.local.env
 .terraform
 .terraform.*
 terraform.*
