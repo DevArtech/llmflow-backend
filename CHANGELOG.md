@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.3.6 (2024-07-21)
+
+### Fix
+
+* fix: Fix terraform misconfiguration ([`d1f3f83`](https://github.com/DevArtech/llmflow-backend/commit/d1f3f839718d894725c20707141be3481206e950))
+
 ## v0.3.5 (2024-07-20)
 
 ### Fix
