@@ -11,10 +11,20 @@ LLMFlow - A programming language for LLM Apps
 ## How to run the API locally
 
 1. To boot up the API, run: `pipenv run start`
+
    > Executing the API in this manner allows for the application to automatically relaunch on edits to the scripts
 2. Application should open on http://localhost:8000
 3. To access the API docs, go to http://localhost:8000/docs or http://localhost:8000/redoc
+
    > The docs are a way to see what endpoints are available, and make test calls to the given endpoints.
+
+## Addons
+
+Part of this project is designed specifically for the [Milwaukee School of Engineering](https://www.msoe.edu/) (MSOE)'s Supercomputer [ROSIE](https://www.msoe.edu/about-msoe/news/details/meet-rosie/). To allow the project to be used without need of ROSIE, ROSIE is designated as an addon.
+
+To enable ROSIE, set the `ROSIE` environment variable to `1` in the environment variables file.
+
+> ROSIE can only be used by MSOE students and faculty, and requires an MSOE account with ROSIE access. If you are not an MSOE student or faculty, you will not be able to use ROSIE.
 
 ## How to log to a file
 
