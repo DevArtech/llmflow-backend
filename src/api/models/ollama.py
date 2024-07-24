@@ -19,7 +19,10 @@ class OllamaLLM(BaseModel):
         temperature: float = 0.7,
     ):
         super().__init__(
-            base_url=base_url, system=system, model_type=model_type, temperature=temperature
+            base_url=base_url,
+            system=system,
+            model_type=model_type,
+            temperature=temperature,
         )
         self.model = Ollama(
             base_url=base_url, system=system, model=model_type, temperature=temperature

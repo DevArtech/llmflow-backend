@@ -183,24 +183,32 @@ class Model(BaseModel):
                     temperature=float(args[2]["Value"]),
                 )
                 return model.invoke(data).content
-            
+
         elif node["Name"] == "Ollama LLM":
 
             def function(data, *args):
-                base_url = "http://localhost:11434" if args[0]["Value"] == "" else args[0]["Value"]
+                base_url = (
+                    "http://localhost:11434"
+                    if args[0]["Value"] == ""
+                    else args[0]["Value"]
+                )
                 system = ""
 
                 if len(data) >= 3 and isinstance(data[2], str):
                     system = data[2]
                 else:
-                    system = """You are an assistant developed by the LLMFlow framework. 
+                    system = (
+                        """You are an assistant developed by the LLMFlow framework. 
                             LLMFlow is a no-code framework that allows anyone to build an LLM application with ease. 
-                            They can then take their generated programs to production with code generation and exportation to a Github repository.""" if args[3]["Value"] == "" else args[3]["Value"]
+                            They can then take their generated programs to production with code generation and exportation to a Github repository."""
+                        if args[3]["Value"] == ""
+                        else args[3]["Value"]
+                    )
                 model = OllamaLLM(
                     base_url=base_url,
                     model_type=args[1]["Value"],
                     temperature=float(args[2]["Value"]),
-                    system=system
+                    system=system,
                 )
                 return model.invoke(data)
 

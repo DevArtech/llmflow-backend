@@ -5,11 +5,11 @@ from fastapi import Request
 from starlette.routing import Match
 from starlette.middleware.base import BaseHTTPMiddleware
 
-if os.getenv('LOGS', 'console') == 'file':
+if os.getenv("LOGS", "console") == "file":
     logging.config.fileConfig("config/file.conf")
 else:
-    logging.config.fileConfig('config/console.conf')
-    
+    logging.config.fileConfig("config/console.conf")
+
 logger = logging.getLogger("appLogger")
 
 

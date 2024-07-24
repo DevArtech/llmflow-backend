@@ -146,7 +146,7 @@ async def get_ollama():
                 placeholder="http://localhost:11434",
                 type="url",
                 hasHandle=True,
-                handleStyle={"top": 104}
+                handleStyle={"top": 104},
             ),
             DropdownItem(
                 label="Model",
