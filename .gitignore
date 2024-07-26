@@ -3,3 +3,4 @@ Pipfile.lock
 .terraform
 .terraform.*
 terraform.*
+config/config.ini

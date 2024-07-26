@@ -1,4 +1,5 @@
 import os
+import configparser
 from fastapi import APIRouter, Response, status, HTTPException
 
 from api.modules.modules import *
@@ -6,12 +7,9 @@ from api.modules.model import Model
 from middleware.logging_middleware import logger
 from .routers import llms, inputs, outputs, chat, helpers
 
-addons = []
-if os.getenv("ROSIE", None) == "1":
-    from .routers.addons import rosie
-
-    addons.append("ROSIE")
-
+config = configparser.ConfigParser()
+config.read('config/config.ini')
+addons = config["settings"]["addons"].split(",")
 
 CSS = """
 #chat_texbox { flex-grow: 5; }
@@ -302,4 +300,5 @@ router.include_router(helpers.router, prefix="/helpers", tags=["Helper Functions
 router.include_router(outputs.router, prefix="/outputs", tags=["Output Options"])
 
 if "ROSIE" in addons:
+    from .routers.addons import rosie
     router.include_router(rosie.router, prefix="/rosie", tags=["ROSIE Options"])
