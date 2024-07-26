@@ -38,7 +38,7 @@ def get_integrations() -> AvailableIntegrations:
     """
     integrations = ["Inputs", "Chat", "LLMs", "Helpers", "Outputs"]
     if "ROSIE" in addons:
-        integrations[-2] = "ROSIE"
+        integrations.insert(-2, "ROSIE")
     return AvailableIntegrations(integrations=integrations)
 
 

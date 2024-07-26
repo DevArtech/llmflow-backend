@@ -44,7 +44,7 @@ async def get_rosie_nodes():
 )
 async def get_rosie_llm_node():
     node = Node(
-        icon="FilterVintage",
+        icon="ROSIE",
         name="ROSIE LLM",
         items=[
             HandleElement(label="Cache", position="left", style={"top": 49}),
@@ -86,7 +86,7 @@ async def get_rosie_llm_node():
 )
 async def get_rosie_sklearn_node():
     node = Node(
-        icon="FilterVintage",
+        icon="ROSIE",
         name="ROSIE SKLearn",
         items=[
             HandleElement(label="Input", position="left", style={"top": 49}),
