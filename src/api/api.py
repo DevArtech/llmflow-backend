@@ -7,9 +7,15 @@ from api.modules.model import Model
 from middleware.logging_middleware import logger
 from .routers import llms, inputs, outputs, chat, helpers
 
-config = configparser.ConfigParser()
-config.read('config/config.ini')
-addons = config["settings"]["addons"].split(",")
+addons = []
+try:
+    config = configparser.ConfigParser()
+    config.read('config/config.ini')
+    addons = config["settings"]["addons"].split(",")
+except NameError:
+    pass
+except KeyError:
+    pass
 
 CSS = """
 #chat_texbox { flex-grow: 5; }
