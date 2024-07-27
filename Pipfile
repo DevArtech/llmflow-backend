@@ -19,13 +19,14 @@ black = "*"
 python-semantic-release="*"
 enforce-git-message="*"
 ipykernel="*"
+watchfiles="*"
 
 [requires]
 python_version = "3.11"
 
 [scripts]
 shell = "bash -c"
-start = "uvicorn --app-dir src main:app --reload"
+start = "uvicorn --app-dir src main:app --reload --reload-dir src --reload-dir config --reload-dir . --reload-include '.env' --reload-include '*.ini' --reload-include '*.conf'"
 format = "python -m black src"
 version = "semantic-release --noop version --print"
 release = "cmd /c \"semantic-release version && git fetch origin main\""
