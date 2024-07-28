@@ -2,9 +2,9 @@ import time
 import gradio as gr
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Any
-from ..models.openai import OpenAILLM
-from ..models.ollama import OllamaLLM
-from ..modules.modules import ModelNode
+from api.models.openai import OpenAILLM
+from api.models.ollama import OllamaLLM
+from api.modules.graph import Graph
 from langchain_core.messages import SystemMessage
 from middleware.logging_middleware import logger
 
@@ -13,7 +13,7 @@ class Model(BaseModel):
     io: Any
     ELEMENTS_PER_ROW: int = 4
     stored_json: Optional[Dict[str, Any]] = None
-    model: List[ModelNode] = []
+    graph: Graph = Graph()
 
     def store_json(self, json_data: Dict[str, Any]):
         self.stored_json = json_data
@@ -24,12 +24,11 @@ class Model(BaseModel):
 
         return self.stored_json == json_data
 
-    def set_model(self, model: List):
-        self.model = model
-        self.model.sort(key=lambda x: x.idx)
+    def set_graph(self, graph: Graph):
+        self.graph = graph
 
     def get_model(self):
-        return self.model
+        return self.graph
 
     def render_elements(
         self,

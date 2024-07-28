@@ -175,14 +175,3 @@ class Node(BaseModel):
             ]
         ]
     ] = None
-
-
-class ModelNode(BaseModel):
-    """A node in a list of nodes."""
-
-    idx: int
-    name: str
-    sources: List[int]
-    func: List[Callable]
-    args: List[Dict[str, Any]]
-    overrides: Optional[List[Dict[str, int]]] = None

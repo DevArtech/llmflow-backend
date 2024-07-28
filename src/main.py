@@ -1,3 +1,4 @@
+import traceback
 import gradio as gr
 from fastapi import FastAPI, status, Request
 from fastapi.responses import JSONResponse
@@ -34,6 +35,7 @@ app.add_middleware(LoggingMiddleware)
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger.error(f"Error: {exc}")
+    traceback.print_exc()
     return JSONResponse(
         status_code=HTTP_500_INTERNAL_SERVER_ERROR,
         content={"message": "An unexpected error occurred.", "detail": str(exc)},

@@ -1,16 +1,18 @@
-import os
+import traceback
 import configparser
 from fastapi import APIRouter, Response, status, HTTPException
 
 from api.modules.modules import *
+from api.modules.handlers import dispatch
 from api.modules.model import Model
 from middleware.logging_middleware import logger
 from .routers import llms, inputs, outputs, chat, helpers
+from api.modules.graph import Graph, GraphNode
 
 addons = []
 try:
     config = configparser.ConfigParser()
-    config.read('config/config.ini')
+    config.read("config/config.ini")
     addons = config["settings"]["addons"].split(",")
 except NameError:
     pass
@@ -61,237 +63,103 @@ def update_architecture(architecture: ArchitectureContract) -> None:
     """
 
     request_model = architecture.model
+    if not request_model.get("Nodes") or not request_model.get("Edges"):
+        model.render_elements()
+        return Response(status_code=status.HTTP_200_OK)
+    
     if not model.compare_json(request_model):
-        chat_interface = None
-        input_elements = [gr.Markdown("# Input")]
-        output_elements = [gr.Markdown("# Output")]
-        elements = {}
-        model_schema: List = []
+        graph = Graph()
+        elements = {
+            "chat_interface": None,
+            "input_elements": [],
+            "output_elements": [],
+            "data_elements": [],
+        }
 
-        if not request_model.get("Nodes") or not request_model.get("Edges"):
-            model.render_elements()
-            return {"success": True}
-
-        try:
-            for node in request_model["Nodes"]:
-                if "Chat" in node["Name"]:
-                    input_elements.pop(0)
-                    output_elements = None
-                    chat_obj = None
-                    if node["Name"] == "Text-Only Chat":
-                        label = (
-                            node["Items"][0]["Value"]
-                            if node["Items"][0]["Value"] != ""
-                            else "Chat"
-                        )
-                        chat_obj = gr.ChatInterface(
-                            fn=model.execute_chat,
-                            multimodal=False,
-                            fill_height=True,
-                            additional_inputs=input_elements,
-                            chatbot=gr.Chatbot(
-                                label=label,
-                                rtl=node["Items"][2]["Value"],
-                                likeable=node["Items"][3]["Value"],
-                                elem_id="chat_chatbot",
-                            ),
-                            textbox=gr.Textbox(
-                                placeholder=node["Items"][1]["Value"],
-                                rtl=node["Items"][2]["Value"],
-                                elem_id="chat_texbox",
-                            ),
-                        )
-
-                    if node["Name"] == "Multimodal Chat":
-                        label = (
-                            node["Items"][0]["Value"]
-                            if node["Items"][0]["Value"] != ""
-                            else "Chat"
-                        )
-                        chat_obj = gr.ChatInterface(
-                            fn=model.execute_chat,
-                            multimodal=True,
-                            fill_height=True,
-                            chatbot=gr.Chatbot(
-                                label=label,
-                                rtl=node["Items"][2]["Value"],
-                                likeable=node["Items"][3]["Value"],
-                                elem_id="chat_chatbot",
-                            ),
-                            textbox=gr.MultimodalTextbox(
-                                placeholder=node["Items"][1]["Value"],
-                                rtl=node["Items"][2]["Value"],
-                                elem_id="chat_multimodal",
-                            ),
-                        )
-
-                    chat_interface = chat_obj
-                    elements[node["Id"]] = chat_obj
-
-                if "Input" in node["Name"]:
-                    input_obj = None
-                    if node["Name"] == "Text Input":
-                        label = (
-                            node["Items"][0]["Value"]
-                            if node["Items"][0]["Value"] != ""
-                            else "Textbox"
-                        )
-                        input_obj = gr.Textbox(
-                            label=label,
-                            placeholder=node["Items"][1]["Value"],
-                            type=node["Items"][2]["Value"],
-                            elem_id=node["Id"],
-                        )
-                    if node["Name"] == "Image Input":
-                        label = (
-                            node["Items"][0]["Value"]
-                            if node["Items"][0]["Value"] != ""
-                            else "Image"
-                        )
-                        input_obj = gr.Image(label=label, elem_id=node["Id"])
-                    if node["Name"] == "Audio Input":
-                        label = (
-                            node["Items"][0]["Value"]
-                            if node["Items"][0]["Value"] != ""
-                            else "Audio"
-                        )
-                        input_obj = gr.Audio(label=label, elem_id=node["Id"])
-                    if node["Name"] == "Video Input":
-                        label = (
-                            node["Items"][0]["Value"]
-                            if node["Items"][0]["Value"] != ""
-                            else "Video"
-                        )
-                        input_obj = gr.Video(label=label, elem_id=node["Id"])
-                    if node["Name"] == "File Input":
-                        label = (
-                            node["Items"][0]["Value"]
-                            if node["Items"][0]["Value"] != ""
-                            else "File"
-                        )
-                        input_obj = gr.File(label=label, elem_id=node["Id"])
-
-                    input_elements.append(input_obj)
-                    elements[node["Id"]] = input_obj
-
-                if "LLM" in node["Name"]:
-                    llm_obj = gr.Textbox(visible=False, elem_id=node["Id"])
-                    elements[node["Id"]] = llm_obj
-
-                elif "Output" in node["Name"]:
-                    output_obj = None
-                    if node["Name"] == "Text Output":
-                        label = (
-                            node["Items"][0]["Value"]
-                            if node["Items"][0]["Value"] != ""
-                            else "Result"
-                        )
-                        output_obj = gr.Textbox(
-                            label=label,
-                            placeholder=node["Items"][1]["Value"],
-                            interactive=False,
-                            elem_id=node["Id"],
-                        )
-
-                    output_elements.append(output_obj)
-                    elements[node["Id"]] = output_obj
-
+        for node in request_model["Nodes"]:
+            name = node["Name"]
+            if "LLM" in node["Name"]:
+                name = "LLM"
+            handler = dispatch.get(name)
+            if handler:
+                element = (
+                    handler(node)
+                    if "Chat" not in name
+                    else handler(node, elements["input_elements"], model)
+                )
+                graph.push(GraphNode(idx=node["Id"], name=node["Name"]))
+                if "Chat" in name:
+                    elements["chat_interface"] = element
+                    elements["input_elements"]
+                    elements["output_elements"] = None
+                elif "Input" in name:
+                    elements["input_elements"].append(element)
+                elif "Output" in name:
+                    elements["output_elements"].append(element)
                 else:
-                    if node["Name"] == "System Prompt":
-                        elements[node["Id"]] = gr.Textbox(
-                            visible=False, elem_id=node["Id"]
-                        )
+                    elements["data_elements"].append(element)
+            else:
+                logger.warning(
+                    f"API | Update Architecture - No handler for node: {node['Name']}"
+                )
 
-            normal_edges = [
-                edge for edge in request_model["Edges"] if edge["Type"] == "Normal"
-            ]
-            data_edges = [
-                edge for edge in request_model["Edges"] if edge["Type"] == "Data"
-            ]
+        normal_edges = [
+            edge for edge in request_model["Edges"] if edge["Type"] == "Normal"
+        ]
+        data_edges = [
+            edge for edge in request_model["Edges"] if edge["Type"] == "Data"
+        ]
 
-            for edge in normal_edges:
-                source_node = request_model["Nodes"][int(edge["Source"]) - 1]
-                target_node = request_model["Nodes"][int(edge["Target"]) - 1]
+        for edge in normal_edges:
+            source_id = int(edge["Source"])
+            target_id = int(edge["Target"])
 
-                func = model.get_function(target_node)
+            target_json = request_model["Nodes"][target_id - 1]
+            func = model.get_function(target_json)
 
-                for node in model_schema:
-                    if node.idx == int(target_node["Id"]):
-                        node.sources.append(int(source_node["Id"]))
-                        break
-                else:
-                    model_schema.append(
-                        ModelNode(
-                            idx=target_node["Id"],
-                            name=request_model["Nodes"][int(edge["Target"]) - 1][
-                                "Name"
-                            ],
-                            sources=[int(source_node["Id"])],
-                            func=[func],
-                            args=target_node["Items"],
-                            overrides=[],
-                        )
-                    )
+            source_node = next((item for item in list(graph.node_index.keys()) if item.idx == source_id), None)
+            target_node = next((item for item in list(graph.node_index.keys()) if item.idx == target_id), None)
 
-            for edge in data_edges:
-                source_node = request_model["Nodes"][int(edge["Source"]) - 1]
-                source_element = elements[source_node["Id"]]
-                target_node = request_model["Nodes"][int(edge["Target"]) - 1]
+            target_node.func = [func]
+            if graph.node_index[source_node] not in target_node.requires:
+                target_node.requires.append(graph.node_index[source_node])
+            target_node.args = target_json["Items"]
+            graph.connect(source_node, target_node)
 
-                override = model.get_override(target_node, edge["Target Handle"])
+        for edge in data_edges:
+            source_id = int(edge["Source"])
+            target_id = int(edge["Target"])
 
-                for node in model_schema:
-                    if node.idx == int(target_node["Id"]):
-                        node.overrides.append(
-                            {
-                                override: (
-                                    input_elements.index(source_element) - 1
-                                    if chat_interface is None
-                                    else input_elements.index(source_element)
-                                )
-                            }
-                        )
-                        break
-                else:
-                    func = model.get_function(target_node)
+            target_json = request_model["Nodes"][target_id - 1]
+            override = model.get_override(target_json, edge["Target Handle"])
+            
 
-                    model_schema.append(
-                        ModelNode(
-                            idx=target_node["Id"],
-                            name=request_model["Nodes"][int(edge["Target"]) - 1][
-                                "Name"
-                            ],
-                            sources=[int(source_node["Id"])],
-                            func=[func],
-                            args=target_node["Items"],
-                            overrides=[
-                                {
-                                    override: (
-                                        input_elements.index(source_element) - 1
-                                        if chat_interface is None
-                                        else input_elements.index(source_element)
-                                    )
-                                }
-                            ],
-                        )
-                    )
+            source_node = next((item for item in list(graph.node_index.keys()) if item.idx == source_id), None)
+            target_node = next((item for item in list(graph.node_index.keys()) if item.idx == target_id), None)
 
-            model.set_model(model_schema)
+            if graph.node_index[source_node] not in target_node.requires:
+                target_node.requires.append(graph.node_index[source_node])
+            if isinstance(target_node.overrides, list):
+                target_node.overrides.append(override)
+            else:
+                target_node.overrides = [override]
+            graph.connect(source_node, target_node)
+
+
+            model.set_graph(graph)
             model.store_json(request_model)
             logger.info(
                 f"API | Update Architecture - Set model: {json.dumps(request_model)}"
             )
-
-        except Exception as e:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid model architecture provided. Error: {e}",
-            )
+        
+        if elements["chat_interface"] is None:
+            elements["input_elements"].insert(0, gr.Markdown("# Input"))
+            elements["output_elements"].insert(0, gr.Markdown("# Output"))
 
         model.render_elements(
-            chat_interface=chat_interface,
-            input_elements=input_elements,
-            output_elements=output_elements,
+            chat_interface=elements["chat_interface"],
+            input_elements=elements["input_elements"],
+            output_elements=elements["output_elements"],
         )
 
     return Response(status_code=status.HTTP_200_OK)
@@ -307,4 +175,5 @@ router.include_router(outputs.router, prefix="/outputs", tags=["Output Options"]
 
 if "ROSIE" in addons:
     from .routers.addons import rosie
+
     router.include_router(rosie.router, prefix="/rosie", tags=["ROSIE Options"])
