@@ -144,10 +144,6 @@ def update_architecture(architecture: ArchitectureContract) -> None:
                 target_node.overrides = [override]
             graph.connect(source_node, target_node)
 
-            for k, v in graph.graph.items():
-                print("key\n", k, "\n")
-                print("value\n", v, "\n")
-
             graph_app.graph = graph
             graph_app.stored_json = request_model
             logger.info(
