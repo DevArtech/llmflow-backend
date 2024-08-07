@@ -4,7 +4,7 @@ from fastapi import APIRouter, Response, status, HTTPException
 
 from api.modules.modules import *
 from api.modules.handlers import dispatch
-from api.modules.model import Model
+from api.modules.graph import GraphApp
 from middleware.logging_middleware import logger
 from .routers import llms, inputs, outputs, chat, helpers
 from api.modules.graph import Graph, GraphNode
@@ -26,7 +26,7 @@ CSS = """
 
 router = APIRouter()
 
-model = Model(io=gr.Blocks(css=CSS))
+graph_app = GraphApp(io=gr.Blocks(css=CSS))
 
 
 @router.get(
@@ -64,10 +64,10 @@ def update_architecture(architecture: ArchitectureContract) -> None:
 
     request_model = architecture.model
     if not request_model.get("Nodes") or not request_model.get("Edges"):
-        model.render_elements()
+        graph_app.render_elements()
         return Response(status_code=status.HTTP_200_OK)
     
-    if not model.compare_json(request_model):
+    if not graph_app.compare_json(request_model):
         graph = Graph()
         elements = {
             "chat_interface": None,
@@ -85,7 +85,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
                 element = (
                     handler(node)
                     if "Chat" not in name
-                    else handler(node, elements["input_elements"], model)
+                    else handler(node, elements["input_elements"], graph_app)
                 )
                 graph.push(GraphNode(idx=node["Id"], name=node["Name"]))
                 if "Chat" in name:
@@ -115,7 +115,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
             target_id = int(edge["Target"])
 
             target_json = request_model["Nodes"][target_id - 1]
-            func = model.get_function(target_json)
+            func = graph_app.get_function(target_json)
 
             source_node = next((item for item in list(graph.node_index.keys()) if item.idx == source_id), None)
             target_node = next((item for item in list(graph.node_index.keys()) if item.idx == target_id), None)
@@ -131,8 +131,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
             target_id = int(edge["Target"])
 
             target_json = request_model["Nodes"][target_id - 1]
-            override = model.get_override(target_json, edge["Target Handle"])
-            
+            override = graph_app.get_override(target_json, edge["Target Handle"]) 
 
             source_node = next((item for item in list(graph.node_index.keys()) if item.idx == source_id), None)
             target_node = next((item for item in list(graph.node_index.keys()) if item.idx == target_id), None)
@@ -145,9 +144,12 @@ def update_architecture(architecture: ArchitectureContract) -> None:
                 target_node.overrides = [override]
             graph.connect(source_node, target_node)
 
+            for k, v in graph.graph.items():
+                print("key\n", k, "\n")
+                print("value\n", v, "\n")
 
-            model.set_graph(graph)
-            model.store_json(request_model)
+            graph_app.graph = graph
+            graph_app.stored_json = request_model
             logger.info(
                 f"API | Update Architecture - Set model: {json.dumps(request_model)}"
             )
@@ -156,7 +158,7 @@ def update_architecture(architecture: ArchitectureContract) -> None:
             elements["input_elements"].insert(0, gr.Markdown("# Input"))
             elements["output_elements"].insert(0, gr.Markdown("# Output"))
 
-        model.render_elements(
+        graph_app.render_elements(
             chat_interface=elements["chat_interface"],
             input_elements=elements["input_elements"],
             output_elements=elements["output_elements"],

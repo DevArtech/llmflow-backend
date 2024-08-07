@@ -7,7 +7,7 @@ from starlette.status import HTTP_500_INTERNAL_SERVER_ERROR
 
 from version import __version__
 from api.modules.modules import *
-from api.api import model
+from api.api import graph_app
 from api.api import router as api_router
 from middleware.logging_middleware import logger, LoggingMiddleware
 
@@ -63,7 +63,7 @@ def get_health() -> HealthCheck:
     return HealthCheck(status="OK")
 
 
-model.render_elements()
+graph_app.render_elements()
 
-app = gr.mount_gradio_app(app, model.io, path="/gradio")
+app = gr.mount_gradio_app(app, graph_app.io, path="/gradio")
 app.include_router(api_router, prefix=API)

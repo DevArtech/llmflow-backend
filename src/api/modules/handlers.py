@@ -1,12 +1,12 @@
 import gradio as gr
-from api.modules.model import Model
+from api.modules.graph import GraphApp
 
 
 def create_label(items, default):
     return items[0]["Value"] if items[0]["Value"] != "" else default
 
 
-def handle_text_only_chat(node, input_elements, model: Model):
+def handle_text_only_chat(node, input_elements, model: GraphApp):
     label = create_label(node["Items"], "Chat")
     rtl = node["Items"][2]["Value"]
     placeholder = node["Items"][1]["Value"]
@@ -25,7 +25,7 @@ def handle_text_only_chat(node, input_elements, model: Model):
     )
 
 
-def handle_multimodal_chat(node, input_elements, model: Model):
+def handle_multimodal_chat(node, input_elements, model: GraphApp):
     label = create_label(node["Items"], "Chat")
     rtl = node["Items"][2]["Value"]
     placeholder = node["Items"][1]["Value"]
